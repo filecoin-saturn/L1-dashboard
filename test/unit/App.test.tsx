@@ -1,4 +1,4 @@
-import { it, describe, expect, assert } from 'vitest'
+import { it, describe, expect } from 'vitest'
 
 describe('App test', () => {
     it('Should show title', () => {
