@@ -27,7 +27,7 @@ describe('basic', async () => {
         const header = (await page.$('.App-header'))!
         expect(header).toBeDefined()
 
-        let text = await page.evaluate(header => header.textContent, header)
+        const text = await page.evaluate(header => header.textContent, header)
         expect(text).toBe('Saturn L2 Web UI')
     }, 60_000)
 })
