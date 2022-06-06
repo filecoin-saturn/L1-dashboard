@@ -12,12 +12,6 @@ jobs:
       - name: Checkout 🛎️
         uses: actions/checkout@v3
 
-      - name: Run tests
-        run: npm run test
-
-      - name: Build
-        run: npm run build
-
       # Reuse tag build
       - name: Cache build dir
         uses: actions/cache@v2
