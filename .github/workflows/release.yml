@@ -29,7 +29,9 @@ jobs:
           npm run build
 
       - name: Create archive
-        run: tar -czf saturn-l2-webui.tar.gz dist/*
+        run: |
+          cd dist
+          tar -czf ../saturn-l2-webui.tar.gz *
 
       - name: Attach prebuilt archive to Release Notes
         uses: skx/github-action-publish-binaries@c881a3f8ffb80b684f367660178d38ceabc065c2 #release-0.15
