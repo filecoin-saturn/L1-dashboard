@@ -23,8 +23,6 @@ $ npm run dev
 1. Commit changes and ensure everything is merged into `main` branch
 1. Update the version (`npm version [major|minor|patch]`, it will create a new tag `vN.N.N`, note it down)
 1. Push `main` branch and the `vN.N.N` tag to GitHub: `git push --atomic origin vN.N.N`
-1. Wait for `vN.N.N` to [build on CI](https://github.com/filecoin-project/saturn-l2-webui/actions)
-1. [Publish a release](https://github.com/filecoin-project/saturn-l2-webui/releases) with the tag you created.
 
 ## License
 
