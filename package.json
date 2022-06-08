@@ -2,6 +2,7 @@
   "name": "saturn-l2-webui",
   "private": true,
   "version": "0.0.6",
+  "description": "A frontend UI for the Saturn L2 node.",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -35,5 +36,14 @@
     "typescript": "^4.6.3",
     "vite": "^2.9.9",
     "vitest": "^0.13.0"
+  },
+  "author": "Protocol Labs",
+  "license": "(Apache-2.0 AND MIT)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/filecoin-project/saturn-l2-webui.git"
+  },
+  "bugs": {
+    "url": "https://github.com/filecoin-project/saturn-l2-webui/issues"
   }
 }
