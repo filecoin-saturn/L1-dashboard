@@ -9,5 +9,8 @@ module.exports = {
     plugins: ['@typescript-eslint', 'jsx-a11y'],
     rules: {
         indent: ['error', 4]
+    },
+    globals: {
+        cl: true
     }
 }
