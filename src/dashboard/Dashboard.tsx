@@ -5,13 +5,20 @@ import Loader from '@/components/Loader'
 import * as api from '@/api'
 import { MetricsResponse } from '@/api.types'
 import { pastDateRange } from '@/date-utils'
+import RequestsChart from './RequestsChart'
+import BandwidthChart from './BandwidthChart'
+import EarningsChart from './EarningsChart'
 
 function Dashboard () {
     const { address } = useParams()
+    // TODO: Differentiate between initial load and subsequent auto loads
+    // Do what digital ocean does
+    // * refresh on tab focus after being idle for > 1 minute?
+    // * refresh on interval
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState(null)
-    const [metrics, setMetrics] = useState<MetricsResponse>({})
-    const [{ startDate, endDate }, setDateRange] = useState(pastDateRange())
+    const [{ earnings, nodes, metrics }, setMetricsRes] = useState<MetricsResponse>({})
+    const [dateRange, setDateRange] = useState(pastDateRange())
 
     useEffect(() => {
         (async () => {
@@ -21,9 +28,10 @@ function Dashboard () {
                 setIsLoading(true)
                 setError(null)
 
+                const { startDate, endDate } = dateRange
                 const metricsRes = await api.fetchMetrics(
                     address, startDate, endDate)
-                setMetrics(metricsRes)
+                setMetricsRes(metricsRes)
             } catch (err) {
                 setError(err?.message ?? 'Error retrieving metrics.')
             } finally {
@@ -45,7 +53,14 @@ function Dashboard () {
             </>
         )
     } else {
-        body = 'Show graph'
+        const commonProps = { dateRange, isLoading }
+        body = (
+            <div className="flex flex-wrap justify-center gap-4">
+                <EarningsChart earnings={earnings} {...commonProps} />
+                <RequestsChart metrics={metrics} {...commonProps} />
+                <BandwidthChart metrics={metrics} {...commonProps} />
+            </div>
+        )
     }
 
     return (

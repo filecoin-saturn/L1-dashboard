@@ -14,14 +14,18 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@types/react": "^18.0.12",
+    "bytes": "^3.1.2",
+    "chart.js": "^3.8.0",
     "classnames": "^2.3.1",
     "dayjs": "^1.11.3",
     "react": "^18.0.0",
+    "react-chartjs-2": "^4.2.0",
     "react-dom": "^18.0.0",
     "react-router-dom": "^6.3.0"
   },
   "devDependencies": {
+    "@types/bytes": "^3.1.1",
+    "@types/react": "^18.0.14",
     "@types/react-dom": "^18.0.0",
     "@typescript-eslint/eslint-plugin": "^5.27.1",
     "@typescript-eslint/parser": "^5.27.1",

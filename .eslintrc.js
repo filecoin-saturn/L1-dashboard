@@ -14,11 +14,13 @@ module.exports = {
         cl: true
     },
     // https://github.com/eslint/typescript-eslint-parser/issues/437#issuecomment-435526531
-    overrides: {
-        files: ['**/*.ts'],
-        parser: 'typescript-eslint-parser',
-        rules: {
-          'no-undef': 'off'
+    overrides: [
+        {
+            files: ['**/*.ts'],
+            parser: '@typescript-eslint/parser',
+            rules: {
+                'no-undef': 'off'
+            }
         }
-    }
+    ]
 }

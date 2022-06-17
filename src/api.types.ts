@@ -1,8 +1,6 @@
 export interface Node {
-    id: string
     active: boolean
-    createdAt: Date
-    updatedAt: Date
+    count: number
 }
 
 export interface Metric {
@@ -11,9 +9,15 @@ export interface Metric {
     numRequests: number
 }
 
+export interface Earning {
+    earningsDate: Date
+    filAmount: number
+}
+
 export interface MetricsResponse {
     nodes: Node[]
     metrics: Metric[]
+    earnings: Earning[]
 }
 
 export interface RequestInit extends globalThis.RequestInit {

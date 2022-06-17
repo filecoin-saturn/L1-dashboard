@@ -1,7 +1,7 @@
 import { Route, Routes, useLocation } from 'react-router-dom'
-import Dashboard from './views/Dashboard'
+import Dashboard from './dashboard/Dashboard'
 import NavBar from './components/NavBar'
-import Home from './views/Home'
+import Home from './home/Home'
 
 export default function App () {
     const { pathname } = useLocation()
@@ -12,7 +12,7 @@ export default function App () {
             <div className="flex-1 container mx-auto p-2">
                 <Routes>
                     <Route path="/" element={<Home/>} />
-                    <Route path="/dashboard/:address" element={<Dashboard/>} />
+                    <Route path="/address/:address" element={<Dashboard/>} />
                 </Routes>
             </div>
         </div>

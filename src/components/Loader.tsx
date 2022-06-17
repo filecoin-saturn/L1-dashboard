@@ -2,7 +2,7 @@ export default function Loader () {
     const style = {
         width: '48px',
         height: '48px',
-        border: '5px solid #FFF',
+        border: '3px solid #e2e8f0',
         borderBottomColor: 'transparent',
         borderRadius: '50%',
         display: 'inline-block',

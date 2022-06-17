@@ -27,10 +27,6 @@ export async function wfetch (resource: RequestInfo | URL, opts: RequestInit = {
     return response
 }
 
-export function fetchEarnings () {
-
-}
-
 export async function fetchMetrics (filAddress: string, startDate: Date, endDate: Date) {
     const url = new URL(METRICS_ORIGIN)
     url.searchParams.set('filAddress', filAddress)
@@ -38,12 +34,13 @@ export async function fetchMetrics (filAddress: string, startDate: Date, endDate
     url.searchParams.set('endDate', `${endDate.getTime()}`)
 
     const res: MetricsResponse = await wfetch(url).then(r => r.json())
+
+    res.earnings.forEach(e => {
+        e.earningsDate = new Date(e.earningsDate)
+    })
     res.metrics.forEach(m => {
         m.startTime = new Date(m.startTime)
     })
-    res.nodes.forEach(n => {
-        n.createdAt = new Date(n.createdAt)
-        n.updatedAt = new Date(n.updatedAt)
-    })
+
     return res
 }
