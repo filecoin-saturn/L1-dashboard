@@ -1,71 +1,91 @@
-import { useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
-import Loader from '@/components/Loader'
 import * as api from '@/api'
-import { MetricsResponse } from '@/api.types'
+import { MetricsResponse, TimePeriod } from '@/api.types'
 import { pastDateRange } from '@/date-utils'
 import RequestsChart from './RequestsChart'
 import BandwidthChart from './BandwidthChart'
 import EarningsChart from './EarningsChart'
 
+function periodToDateRange (period: TimePeriod) {
+    switch (period) {
+    case TimePeriod.WEEK:
+        return pastDateRange('week')
+    case TimePeriod.MONTH:
+        return pastDateRange('month')
+    case TimePeriod.SIX_MONTH:
+        return pastDateRange('month', 6)
+    }
+}
+
+function Header (
+    { period, setPeriod }:
+    { period: TimePeriod, setPeriod: Dispatch<SetStateAction<TimePeriod>> }) {
+    const options = Object.values(TimePeriod)
+
+    return (
+        <div className="flex pb-8">
+            <select
+                value={period}
+                onChange={e => setPeriod(e.target.value as TimePeriod)}
+                className="ml-auto bg-slate-900 p-2 rounded justify-end">
+                {options.map(o => <option key={o} value={o}>{o}</option>)}
+            </select>
+        </div>
+    )
+}
+
 function Dashboard () {
     const { address } = useParams()
-    // TODO: Differentiate between initial load and subsequent auto loads
-    // Do what digital ocean does
-    // * refresh on tab focus after being idle for > 1 minute?
-    // * refresh on interval
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState(null)
-    const [{ earnings, nodes, metrics }, setMetricsRes] = useState<MetricsResponse>({})
-    const [dateRange, setDateRange] = useState(pastDateRange())
+
+    const [
+        { earnings, nodes, metrics }, setMetricsRes
+    ] = useState<MetricsResponse>({ earnings: [], nodes: [], metrics: [] })
+
+    const [period, setPeriod] = useState<TimePeriod>(TimePeriod.WEEK)
+    const dateRange = periodToDateRange(period)
+    const { startDate, endDate } = dateRange
+
+    // Don't update chart axes until data is fetched.
+    // It looks weird if axes update immediately.
+    const [chartDateRange, setChartDateRange] = useState(dateRange)
+
+    const fetchData = async () => {
+        if (!address) { return }
+
+        try {
+            setIsLoading(true)
+            setError(null)
+
+            const metricsRes = await api.fetchMetrics(
+                address, startDate, endDate)
+            setMetricsRes(metricsRes)
+            setChartDateRange(dateRange)
+        } catch (err) {
+            setError(err?.message ?? 'Error retrieving metrics.')
+        } finally {
+            setIsLoading(false)
+        }
+    }
 
     useEffect(() => {
-        (async () => {
-            if (!address) { return }
+        fetchData()
+    }, [address, startDate.getTime(), endDate.getTime()])
 
-            try {
-                setIsLoading(true)
-                setError(null)
+    const commonProps = { dateRange: chartDateRange, isLoading }
 
-                const { startDate, endDate } = dateRange
-                const metricsRes = await api.fetchMetrics(
-                    address, startDate, endDate)
-                setMetricsRes(metricsRes)
-            } catch (err) {
-                setError(err?.message ?? 'Error retrieving metrics.')
-            } finally {
-                setIsLoading(false)
-            }
-        })()
-    }, [])
-
-    let body
-    if (isLoading) {
-        body = <Loader />
-    } else if (error) {
-        body = <p>Error: {error}</p>
-    } else if (!Object.keys(metrics).length) {
-        body = (
-            <>
-                <p>No data found for this address</p>
-                <p>{address}</p>
-            </>
-        )
-    } else {
-        const commonProps = { dateRange, isLoading }
-        body = (
+    return (
+        <div className="grid justify-center gap-4 pt-12">
+            {error && <p className="text-center text-lg">Error: {error}</p>}
+            <Header {...{ period, setPeriod }}/>
             <div className="flex flex-wrap justify-center gap-4">
                 <EarningsChart earnings={earnings} {...commonProps} />
                 <RequestsChart metrics={metrics} {...commonProps} />
                 <BandwidthChart metrics={metrics} {...commonProps} />
             </div>
-        )
-    }
-
-    return (
-        <div className="flex flex-col items-center pt-12">
-            {body}
         </div>
     )
 }

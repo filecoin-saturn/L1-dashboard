@@ -16,10 +16,10 @@ export const startOfToday = () => dayjs.utc().startOf('day').toDate()
 
 export const endOfDay = (date: Date) => dayjs.utc(date).endOf('day').toDate()
 
-export function pastDateRange (unit: ManipulateType = 'week') {
+export function pastDateRange (unit: ManipulateType = 'week', count = 1) {
     const endDateObj = dayjs.utc().add(1, 'day').startOf('day')
     const endDate = endDateObj.toDate()
-    const startDate = endDateObj.subtract(1, unit).toDate()
+    const startDate = endDateObj.subtract(count, unit).toDate()
 
     return { startDate, endDate }
 }

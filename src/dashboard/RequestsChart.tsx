@@ -2,18 +2,15 @@ import dayjs from 'dayjs'
 import { Line } from 'react-chartjs-2'
 
 import { Metric } from '@/api.types'
-import ChartContainer from './ChartContainer'
+import ChartContainer, { ChartProps } from './ChartContainer'
 import { ChartOptions } from 'chart.js'
 
-interface RequestsChartProps {
+interface RequestsChartProps extends ChartProps {
     metrics: Metric[]
-    dateRange: {
-        startDate: Date
-        endDate: Date
-    }
 }
 
-export default function RequestsChart ({ metrics, dateRange }: RequestsChartProps) {
+export default function RequestsChart (props: RequestsChartProps) {
+    const { metrics, dateRange, isLoading  } = props
     const options: ChartOptions = {
         responsive: true,
         plugins: {
@@ -44,7 +41,7 @@ export default function RequestsChart ({ metrics, dateRange }: RequestsChartProp
     }
 
     return (
-        <ChartContainer>
+        <ChartContainer isLoading={isLoading}>
             <Line options={options} data={data} />
         </ChartContainer>
     )

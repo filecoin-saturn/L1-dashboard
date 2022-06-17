@@ -19,7 +19,10 @@ export async function wfetch (resource: RequestInfo | URL, opts: RequestInit = {
     const response = await fetch(resource, opts)
 
     if (response.status >= 400) {
-        const error = new FetchError(`${response.statusText || response.status}`)
+        let message = await response.json().then(d => d.message).catch(() => null)
+        message = `${message ?? (response.statusText || response.status)}`
+
+        const error = new FetchError(message)
         error.response = response
         throw error
     }

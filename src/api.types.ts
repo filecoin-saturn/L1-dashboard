@@ -23,3 +23,9 @@ export interface MetricsResponse {
 export interface RequestInit extends globalThis.RequestInit {
     timeout?: number
 }
+
+export enum TimePeriod {
+    WEEK = '7 Days',
+    MONTH = '1 Month',
+    SIX_MONTH = '6 Months'
+}

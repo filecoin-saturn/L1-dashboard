@@ -19,7 +19,8 @@ module.exports = {
             files: ['**/*.ts'],
             parser: '@typescript-eslint/parser',
             rules: {
-                'no-undef': 'off'
+                'no-undef': 'off',
+                'no-unused-vars': 'off'
             }
         }
     ]

@@ -3,20 +3,18 @@ import dayjs from 'dayjs'
 import { Line } from 'react-chartjs-2'
 
 import { Metric } from '@/api.types'
-import ChartContainer from './ChartContainer'
+import ChartContainer, { ChartProps } from './ChartContainer'
 import { ChartOptions } from 'chart.js'
 
-interface BandwidthChartProps {
+interface BandwidthChartProps extends ChartProps {
     metrics: Metric[]
-    dateRange: {
-        startDate: Date
-        endDate: Date
-    }
 }
 
 const fmtBytes = (val: number) => bytes(val * 2 ** 20, { unitSeparator: ' ' })
 
-export default function BandwidthChart ({ metrics, dateRange }: BandwidthChartProps) {
+export default function BandwidthChart (props: BandwidthChartProps) {
+    const { dateRange, metrics, isLoading } = props
+
     const options: ChartOptions = {
         responsive: true,
         plugins: {
@@ -57,7 +55,7 @@ export default function BandwidthChart ({ metrics, dateRange }: BandwidthChartPr
     }
 
     return (
-        <ChartContainer>
+        <ChartContainer isLoading={isLoading}>
             <Line options={options} data={data} />
         </ChartContainer>
     )

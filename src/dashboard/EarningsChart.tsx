@@ -1,20 +1,16 @@
-import bytes from 'bytes'
 import dayjs from 'dayjs'
 import { Line } from 'react-chartjs-2'
 
 import { Earning } from '@/api.types'
-import ChartContainer from './ChartContainer'
+import ChartContainer, { ChartProps } from './ChartContainer'
 import { ChartOptions } from 'chart.js'
 
-interface EarningsChartProps {
+interface EarningsChartProps extends ChartProps {
     earnings: Earning[]
-    dateRange: {
-        startDate: Date
-        endDate: Date
-    }
 }
 
-export default function EarningsChart ({ earnings, dateRange }: EarningsChartProps) {
+export default function EarningsChart (props: EarningsChartProps) {
+    const { earnings, dateRange, isLoading } = props
     const options: ChartOptions = {
         responsive: true,
         plugins: {
@@ -56,7 +52,7 @@ export default function EarningsChart ({ earnings, dateRange }: EarningsChartPro
     }
 
     return (
-        <ChartContainer>
+        <ChartContainer isLoading={isLoading}>
             <Line options={options} data={data} />
         </ChartContainer>
     )
