@@ -11,9 +11,7 @@ const basename = window.location.hostname === 'dashboard.strn.network'
     : '/webui/' // Assume inside filecoin station
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-    <React.StrictMode>
-        <BrowserRouter basename={basename}>
-            <App />
-        </BrowserRouter>
-    </React.StrictMode>
+    <BrowserRouter basename={basename}>
+        <App />
+    </BrowserRouter>
 )

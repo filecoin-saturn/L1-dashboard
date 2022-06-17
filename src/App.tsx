@@ -1,25 +1,20 @@
-import FilAddressForm from './FilAddressForm'
+import { Route, Routes, useLocation } from 'react-router-dom'
+import Dashboard from './views/Dashboard'
+import NavBar from './components/NavBar'
+import Home from './views/Home'
 
-const logoURL = new URL('./assets/saturn-logo.svg', import.meta.url).href
+export default function App () {
+    const { pathname } = useLocation()
 
-function Home () {
     return (
-        <div className="flex flex-col items-center mt-32 mx-auto text-center">
-            <img src={logoURL} className="w-96 mb-4" alt="logo"></img>
-            <p className="text-lg mb-16">
-                View your Saturn Node's FIL earnings, performance metrics, and more.
-            </p>
-            <FilAddressForm></FilAddressForm>
+        <div className="flex flex-col h-screen">
+            <NavBar className={pathname === '/' ? 'invisible' : 'visible'}/>
+            <div className="flex-1 container mx-auto p-2">
+                <Routes>
+                    <Route path="/" element={<Home/>} />
+                    <Route path="/dashboard/:address" element={<Dashboard/>} />
+                </Routes>
+            </div>
         </div>
     )
 }
-
-function App () {
-    return (
-        <div className="flex h-screen container mx-auto p-2">
-            <Home />
-        </div>
-    )
-}
-
-export default App
