@@ -16,7 +16,6 @@ export default function BandwidthChart (props: BandwidthChartProps) {
     const { dateRange, metrics, isLoading } = props
 
     const options: ChartOptions = {
-        responsive: true,
         plugins: {
             title: {
                 display: true,

@@ -10,13 +10,12 @@ interface RequestsChartProps extends ChartProps {
 }
 
 export default function RequestsChart (props: RequestsChartProps) {
-    const { metrics, dateRange, isLoading  } = props
+    const { metrics, dateRange, isLoading } = props
     const options: ChartOptions = {
-        responsive: true,
         plugins: {
             title: {
                 display: true,
-                text: 'Total Retrievals'
+                text: 'Number of Retrievals'
             }
         },
         scales: {

@@ -12,7 +12,6 @@ interface EarningsChartProps extends ChartProps {
 export default function EarningsChart (props: EarningsChartProps) {
     const { earnings, dateRange, isLoading } = props
     const options: ChartOptions = {
-        responsive: true,
         plugins: {
             title: {
                 display: true,

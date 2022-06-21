@@ -26,7 +26,7 @@ ChartJS.register(
 )
 
 const { datasets, elements, interaction, plugins, scales } = ChartJS.defaults
-// console.log(ChartJS.defaults)
+//console.log(ChartJS.defaults)
 
 const defaultColor = 'rgb(226 232 240)' // text-slate-200
 const defaultColorLight = 'rgb(226 232 240 / .1)'
@@ -35,6 +35,7 @@ ChartJS.defaults.font.family = "'Roboto', 'Helvetica Neue', sans-serif"
 ChartJS.defaults.color = defaultColor
 ChartJS.defaults.backgroundColor = 'rgb(53 162 235)'
 ChartJS.defaults.borderColor = defaultColorLight
+ChartJS.defaults.maintainAspectRatio = false
 
 datasets.line.fill = 'origin'
 datasets.line.spanGaps = false
