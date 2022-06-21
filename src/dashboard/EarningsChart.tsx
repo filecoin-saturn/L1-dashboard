@@ -15,7 +15,7 @@ export default function EarningsChart (props: EarningsChartProps) {
         plugins: {
             title: {
                 display: true,
-                text: 'FIL Earnings'
+                text: 'Earnings'
             },
             tooltip: {
                 callbacks: {

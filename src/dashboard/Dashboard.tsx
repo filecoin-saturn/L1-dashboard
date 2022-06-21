@@ -110,7 +110,7 @@ function Dashboard () {
     const chartProps = { dateRange: chartDateRange, isLoading }
 
     return (
-        <div className="flex-1 flex flex-col gap-4 pt-4">
+        <div className="flex-1 flex flex-col gap-4 mt-8">
             {error && <p className="text-center text-red-600 text-lg">Error: {error}</p>}
             <Header {...{ metricsRes, address, period, setPeriod }}/>
             <div className="flex flex-wrap justify-center gap-12">

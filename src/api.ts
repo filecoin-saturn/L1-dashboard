@@ -1,6 +1,6 @@
 import { RequestInit, MetricsResponse } from './api.types'
 
-const METRICS_ORIGIN = import.meta.env.METRICS_ORIGIN ?? 'https://ttnqmmizksmixmxdkf75p4g7640tfuux.lambda-url.us-west-2.on.aws/'
+const METRICS_ORIGIN = import.meta.env.VITE_METRICS_ORIGIN ?? 'https://ttnqmmizksmixmxdkf75p4g7640tfuux.lambda-url.us-west-2.on.aws/'
 
 /**
  * Fetch API wrapper that throws on 400+ http status.
