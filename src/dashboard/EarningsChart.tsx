@@ -19,7 +19,7 @@ export default function EarningsChart (props: EarningsChartProps) {
             },
             tooltip: {
                 callbacks: {
-                    label: ({ raw }) => `${raw} FIL`
+                    label: ({ raw }) => `${Number(raw).toLocaleString()} FIL`
                 }
             }
         },
