@@ -192,6 +192,9 @@ jobs:
     needs: [build, test-unit, test-e2e, typecheck, eslint]
     runs-on: ubuntu-latest
     env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.PROD_GITHUB_CI_AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD_GITHUB_CI_AWS_SECRET_ACCESS_KEY }}
+      AWS_ACCOUNT_ID: ${{ secrets.PROD_AWS_ACCOUNT_NUMBER }}
       AWS_REGION: us-west-2
     steps:
       - name: Checkout
@@ -220,10 +223,6 @@ jobs:
 
       - name: Push to S3
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.PROD_GITHUB_CI_AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD_GITHUB_CI_AWS_SECRET_ACCESS_KEY }}
-          AWS_ACCOUNT_ID: ${{ secrets.PROD_AWS_ACCOUNT_NUMBER }}
-          AWS_REGION: ${{ env.AWS_REGION }}
           BUCKET: filecoin-saturn
         run: |
           aws s3 cp dist/index.html s3://$BUCKET/index.html --recursive \
