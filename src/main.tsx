@@ -7,7 +7,7 @@ import './index.css'
 
 window.cl = console.log.bind(console)
 
-const webDomain = `dashboard.${import.meta.env.ROOT_DOMAIN}`
+const webDomain = `dashboard.${import.meta.env.VITE_ROOT_DOMAIN}`
 
 const basename = window.location.hostname === webDomain
     ? '/'
