@@ -228,7 +228,7 @@ jobs:
           aws s3 cp dist/index.html s3://$BUCKET/index.html \
             --cache-control "public, max-age=3600" --only-show-errors
 
-          aws s3 cp dist/assets s3://$BUCKET/webui/ --recursive \
+          aws s3 cp dist/assets s3://$BUCKET/webui/assets/ --recursive \
             --cache-control "public, max-age=3600" --only-show-errors
 
       - name: Create archive
