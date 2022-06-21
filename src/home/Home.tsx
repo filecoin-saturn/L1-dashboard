@@ -8,7 +8,7 @@ export default function Home () {
             <p className="text-lg mb-16">
                 View your Saturn Node's FIL earnings, performance metrics, and more.
             </p>
-            <FilAddressForm></FilAddressForm>
+            <FilAddressForm size="lg" autoFocus/>
         </div>
     )
 }

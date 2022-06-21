@@ -8,28 +8,34 @@ import RequestsChart from './RequestsChart'
 import BandwidthChart from './BandwidthChart'
 import EarningsChart from './EarningsChart'
 
+interface HeaderProps {
+    address: string
+    period: TimePeriod,
+    setPeriod: Dispatch<SetStateAction<TimePeriod>>
+}
+
 function periodToDateRange (period: TimePeriod) {
     switch (period) {
     case TimePeriod.WEEK:
         return pastDateRange('week')
+    case TimePeriod.TWO_WEEK:
+        return pastDateRange('week', 2)
     case TimePeriod.MONTH:
         return pastDateRange('month')
-    case TimePeriod.SIX_MONTH:
-        return pastDateRange('month', 6)
+    // case TimePeriod.SIX_MONTH:
+    //     return pastDateRange('month', 6)
     }
 }
 
-function Header (
-    { period, setPeriod }:
-    { period: TimePeriod, setPeriod: Dispatch<SetStateAction<TimePeriod>> }) {
+function Header ({ address, period, setPeriod }: HeaderProps) {
     const options = Object.values(TimePeriod)
 
     return (
-        <div className="flex pb-8">
+        <div className="flex justify-center items-center gap-4 pb-12">
             <select
                 value={period}
                 onChange={e => setPeriod(e.target.value as TimePeriod)}
-                className="ml-auto bg-slate-900 p-2 rounded justify-end">
+                className="bg-slate-900 p-2 rounded">
                 {options.map(o => <option key={o} value={o}>{o}</option>)}
             </select>
         </div>
@@ -75,16 +81,16 @@ function Dashboard () {
         fetchData()
     }, [address, startDate.getTime(), endDate.getTime()])
 
-    const commonProps = { dateRange: chartDateRange, isLoading }
+    const chartProps = { dateRange: chartDateRange, isLoading }
 
     return (
-        <div className="grid justify-center gap-4 pt-12">
-            {error && <p className="text-center text-lg">Error: {error}</p>}
-            <Header {...{ period, setPeriod }}/>
+        <div className="flex-1 flex flex-col gap-4 pt-4">
+            {/* {error && <p className="text-center text-lg">Error: {error}</p>} */}
+            <Header {...{ address, period, setPeriod }}/>
             <div className="flex flex-wrap justify-center gap-4">
-                <EarningsChart earnings={earnings} {...commonProps} />
-                <RequestsChart metrics={metrics} {...commonProps} />
-                <BandwidthChart metrics={metrics} {...commonProps} />
+                <EarningsChart earnings={earnings} {...chartProps} />
+                <RequestsChart metrics={metrics} {...chartProps} />
+                <BandwidthChart metrics={metrics} {...chartProps} />
             </div>
         </div>
     )
