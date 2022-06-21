@@ -56,7 +56,7 @@ jobs:
       - name: Attach produced build to Github Action
         uses: actions/upload-artifact@v2
         with:
-          name: saturn-l2-webui_${{ github.sha }}
+          name: saturn-webui_${{ github.sha }}
           path: dist
           if-no-files-found: error
 
@@ -116,7 +116,7 @@ jobs:
       - name: Download build artifact
         uses: actions/download-artifact@v2
         with:
-          name: saturn-l2-webui_${{ github.sha }}
+          name: saturn-webui_${{ github.sha }}
           path: dist
 
       - name: Run E2E tests
@@ -225,6 +225,7 @@ jobs:
         env:
           BUCKET: filecoin-saturn
         run: |
+          ls dist
           aws s3 cp dist/index.html s3://$BUCKET/index.html --recursive \
             --cache-control "public, max-age=3600" --only-show-errors
 
@@ -234,9 +235,9 @@ jobs:
       - name: Create archive
         run: |
           cd dist
-          tar -czf ../saturn-l2-webui.tar.gz *
+          tar -czf ../saturn-webui.tar.gz *
 
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          files: saturn-l2-webui.tar.gz
+          files: saturn-webui.tar.gz
