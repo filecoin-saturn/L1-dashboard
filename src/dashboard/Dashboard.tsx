@@ -58,7 +58,7 @@ function Overview (props: OverviewProps) {
 
     return (
         <div className="flex flex-col max-w-[600px] w-[100%] h-[300px] rounded">
-            <div className="flex justify-between bg-[#0066B4] py-2 px-4 text-lg">
+            <div className="flex items-center justify-between bg-[#0066B4] py-2 px-4 text-lg">
                 Overview
                 {props.children}
             </div>
