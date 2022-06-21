@@ -191,6 +191,8 @@ jobs:
     name: release
     needs: [build, test-unit, test-e2e, typecheck, eslint]
     runs-on: ubuntu-latest
+    env:
+      AWS_REGION: us-west-2
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -210,6 +212,25 @@ jobs:
         run: |
           npm ci --prefer-offline --no-audit --progress=false --cache ${{ github.workspace }}/.cache/npm
           npm run build
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Push to S3
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.PROD_GITHUB_CI_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD_GITHUB_CI_AWS_SECRET_ACCESS_KEY }}
+          AWS_ACCOUNT_ID: ${{ secrets.PROD_AWS_ACCOUNT_NUMBER }}
+          AWS_REGION: ${{ env.AWS_REGION }}
+          BUCKET: filecoin-saturn
+        run: |
+          aws s3 cp dist/index.html s3://$BUCKET/index.html --recursive \
+            --cache-control "public, max-age=3600" --only-show-errors
+
+          aws s3 cp dist/assets s3://$BUCKET/webui/ --recursive \
+            --cache-control "public, max-age=3600" --only-show-errors
 
       - name: Create archive
         run: |
