@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { Dispatch, ReactNode, SetStateAction, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 import * as api from '@/api'
@@ -9,11 +9,10 @@ import BandwidthChart from './BandwidthChart'
 import EarningsChart from './EarningsChart'
 import bytes from 'bytes'
 
-interface HeaderProps {
+interface OverviewProps {
     metricsRes: MetricsResponse
     address: string
-    period: TimePeriod,
-    setPeriod: Dispatch<SetStateAction<TimePeriod>>
+    children?: ReactNode
 }
 
 function periodToDateRange (period: TimePeriod) {
@@ -29,10 +28,26 @@ function periodToDateRange (period: TimePeriod) {
     }
 }
 
-function Header ({ metricsRes, address, period, setPeriod }: HeaderProps) {
+function SelectTimePeriod (
+    props: {
+        period: TimePeriod,
+        setPeriod: Dispatch<SetStateAction<TimePeriod>>
+    }
+) {
     const options = Object.values(TimePeriod)
 
-    const { earnings, nodes, metrics } = metricsRes
+    return (
+        <select
+            value={props.period}
+            onChange={e => props.setPeriod(e.target.value as TimePeriod)}
+            className="bg-slate-900 p-1 rounded">
+            {options.map(o => <option key={o} value={o}>{o}</option>)}
+        </select>
+    )
+}
+
+function Overview (props: OverviewProps) {
+    const { earnings, nodes, metrics } = props.metricsRes
 
     // Might be worth using useMemo here if data sets become large.
     const totalEarnings = earnings.reduce((memo, earning) => memo + earning.filAmount, 0)
@@ -42,10 +57,13 @@ function Header ({ metricsRes, address, period, setPeriod }: HeaderProps) {
     const numInactiveNodes = nodes.find(d => !d.active)?.count ?? 0
 
     return (
-        <div className="flex flex-wrap justify-between items-start gap-4 pb-6">
-            <div className="grid grid-cols-[auto_auto] gap-y-2 gap-x-4 border-2
-            border-slate-500 p-4 rounded">
-                <div>Address</div><div className="truncate">{address}</div>
+        <div className="flex flex-col max-w-[600px] w-[100%] h-[300px] rounded">
+            <div className="flex justify-between bg-[#0066B4] py-2 px-4 text-lg">
+                Overview
+                {props.children}
+            </div>
+            <div className="flex-1 grid grid-cols-[auto_1fr] gap-y-2 gap-x-8 p-4 items-center bg-slate-900">
+                <div>Address</div><div className="truncate">{props.address}</div>
                 <div>Nodes</div>
                 <div>
                     {numActiveNodes.toLocaleString()} Active
@@ -55,12 +73,6 @@ function Header ({ metricsRes, address, period, setPeriod }: HeaderProps) {
                 <div>Bandwidth</div><div>{bytes(totalBandwidth, { unitSeparator: ' ' })}</div>
                 <div>Retrievals</div><div>{totalRetrievals.toLocaleString()}</div>
             </div>
-            <select
-                value={period}
-                onChange={e => setPeriod(e.target.value as TimePeriod)}
-                className="m-l-auto bg-slate-900 p-2 rounded">
-                {options.map(o => <option key={o} value={o}>{o}</option>)}
-            </select>
         </div>
     )
 }
@@ -112,8 +124,10 @@ function Dashboard () {
     return (
         <div className="flex-1 flex flex-col gap-4 mt-8">
             {error && <p className="text-center text-red-600 text-lg">Error: {error}</p>}
-            <Header {...{ metricsRes, address, period, setPeriod }}/>
             <div className="flex flex-wrap justify-center gap-12">
+                <Overview {...{ metricsRes, address }}>
+                    <SelectTimePeriod period={period} setPeriod={setPeriod}/>
+                </Overview>
                 <EarningsChart earnings={earnings} {...chartProps} />
                 <RequestsChart metrics={metrics} {...chartProps} />
                 <BandwidthChart metrics={metrics} {...chartProps} />
