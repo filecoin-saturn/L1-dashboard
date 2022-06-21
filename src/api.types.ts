@@ -5,7 +5,7 @@ export interface Node {
 
 export interface Metric {
     startTime: Date
-    numBytesMib: number
+    numBytes: number
     numRequests: number
 }
 

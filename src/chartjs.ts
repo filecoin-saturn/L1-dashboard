@@ -55,7 +55,7 @@ plugins.legend.display = false
 
 plugins.title.font = {
     size: 16,
-    weight: 'bold'
+    weight: 'normal'
 }
 
 plugins.tooltip.yAlign = 'top'

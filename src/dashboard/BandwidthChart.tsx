@@ -10,8 +10,6 @@ interface BandwidthChartProps extends ChartProps {
     metrics: Metric[]
 }
 
-const fmtBytes = (val: number) => bytes(val * 2 ** 20, { unitSeparator: ' ' })
-
 export default function BandwidthChart (props: BandwidthChartProps) {
     const { dateRange, metrics, isLoading } = props
 
@@ -23,7 +21,7 @@ export default function BandwidthChart (props: BandwidthChartProps) {
             },
             tooltip: {
                 callbacks: {
-                    label: ({ raw }) => fmtBytes(Number(raw))
+                    label: ({ raw }) => bytes(Number(raw), { unitSeparator: ' ' })
                 }
             }
         },
@@ -38,7 +36,7 @@ export default function BandwidthChart (props: BandwidthChartProps) {
             },
             y: {
                 ticks: {
-                    callback: val => fmtBytes(Number(val))
+                    callback: val => bytes(Number(val), { unitSeparator: ' ' })
                 }
             }
         }
@@ -48,7 +46,7 @@ export default function BandwidthChart (props: BandwidthChartProps) {
         labels: metrics.map(m => m.startTime),
         datasets: [
             {
-                data: metrics.map(m => m.numBytesMib)
+                data: metrics.map(m => m.numBytes)
             }
         ]
     }
