@@ -54,20 +54,20 @@ _adapters._date.override({
         }
 
         if (valueType === 'string' && typeof format === 'string') {
-            return dayjs(value, format).isValid() ? dayjs(value, format).valueOf() : null
+            return dayjs.utc(value, format).isValid() ? dayjs.utc(value, format).valueOf() : null
         } else if (!(value instanceof dayjs)) {
-            return dayjs(value).isValid() ? dayjs(value).valueOf() : null
+            return dayjs.utc(value).isValid() ? dayjs.utc(value).valueOf() : null
         }
         return null
     },
     format: function (time: any, format: TimeUnit): string {
-        return dayjs(time).format(format)
+        return dayjs.utc(time).format(format)
     },
     add: function (time: any, amount: number, unit: QUnitType & TimeUnit) {
-        return dayjs(time).add(amount, unit).valueOf()
+        return dayjs.utc(time).add(amount, unit).valueOf()
     },
     diff: function (max: any, min: any, unit: TimeUnit) {
-        return dayjs(max).diff(dayjs(min), unit)
+        return dayjs.utc(max).diff(dayjs.utc(min), unit)
     },
     startOf: function (time: any, unit: (TimeUnit & QUnitType) | 'isoWeek', weekday?: number) {
         if (unit === 'isoWeek') {
@@ -77,12 +77,12 @@ _adapters._date.override({
             const validatedWeekday: number =
         typeof weekday === 'number' && weekday > 0 && weekday < 7 ? weekday : 1
 
-            return dayjs(time).isoWeekday(validatedWeekday).startOf('day').valueOf()
+            return dayjs.utc(time).isoWeekday(validatedWeekday).startOf('day').valueOf()
         }
 
-        return dayjs(time).startOf(unit).valueOf()
+        return dayjs.utc(time).startOf(unit).valueOf()
     },
     endOf: function (time: any, unit: TimeUnit & QUnitType) {
-        return dayjs(time).endOf(unit).valueOf()
+        return dayjs.utc(time).endOf(unit).valueOf()
     }
 })
