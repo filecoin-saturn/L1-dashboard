@@ -7,12 +7,16 @@ export interface ChartProps {
         startDate: Date
         endDate: Date
     }
-    children?: ReactNode
 }
 
-export default function ChartContainer (props: ChartProps) {
+export interface ChartContainerProps {
+    isLoading: boolean
+    children: ReactNode
+}
+
+export default function ChartContainer (props: ChartContainerProps) {
     return (
-        <div className={`relative max-w-[600px] w-[100%] h-[300px] p-4 bg-slate-900 rounded`}>
+        <div className={'relative max-w-[600px] w-[100%] h-[300px] p-4 bg-slate-900 rounded'}>
             {props.isLoading && <Loader className="absolute right-2 top-2" />}
             {props.children}
         </div>

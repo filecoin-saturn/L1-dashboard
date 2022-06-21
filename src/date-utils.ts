@@ -51,36 +51,3 @@ export function dayIntervalFromDateRange (startDate: Date, endDate: Date) {
 
     return dateInterval
 }
-
-export function fillTimeSeriesData (startDate, endDate, data, emptyVal = {}) {
-    const filledData = []
-
-    const interval = dayIntervalFromDateRange(startDate, endDate)
-    for (let i = 0, j = 0; i < interval.length; i++) {
-        const date = interval[i]
-        const dataPoint = data[j]
-
-        if (dataPoint && new Date(dataPoint.date).getTime() === date.getTime()) {
-            j++
-            filledData.push(dataPoint)
-        } else {
-            filledData.push({ date, ...emptyVal })
-        }
-    }
-
-    return filledData
-}
-
-// dayNum is 0 to 6, 0 = sunday, 6 = saturday
-// Example: 2nd friday of the current month is getNthDayOfMonth(5, 2)
-export function getNthDayOfMonth (dayNum, nth) {
-    let day = dayjs.utc().startOf('month').day(dayNum)
-
-    // Handle case where day(dayNum) pushes the date to the previous month
-    if (day.date() > 7) {
-        day = day.add(7, 'day')
-    }
-    day = day.add(nth - 1, 'week')
-
-    return day.toDate()
-}

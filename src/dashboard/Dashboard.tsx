@@ -66,9 +66,9 @@ function Header ({ metricsRes, address, period, setPeriod }: HeaderProps) {
 }
 
 function Dashboard () {
-    const { address } = useParams()
+    const { address = '' } = useParams()
     const [isLoading, setIsLoading] = useState(true)
-    const [error, setError] = useState(null)
+    const [error, setError] = useState<null | string>(null)
 
     const [
         metricsRes, setMetricsRes
@@ -94,7 +94,9 @@ function Dashboard () {
             setMetricsRes(metricsRes)
             setChartDateRange(dateRange)
         } catch (err) {
-            setError(err?.message ?? 'Error retrieving metrics.')
+            if (err instanceof Error) {
+                setError(err?.message ?? 'Error retrieving metrics.')
+            }
         } finally {
             setIsLoading(false)
         }
@@ -109,7 +111,7 @@ function Dashboard () {
 
     return (
         <div className="flex-1 flex flex-col gap-4 pt-4">
-            {/* {error && <p className="text-center text-lg">Error: {error}</p>} */}
+            {error && <p className="text-center text-red-600 text-lg">Error: {error}</p>}
             <Header {...{ metricsRes, address, period, setPeriod }}/>
             <div className="flex flex-wrap justify-center gap-12">
                 <EarningsChart earnings={earnings} {...chartProps} />

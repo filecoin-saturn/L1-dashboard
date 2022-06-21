@@ -2,10 +2,6 @@ import { RequestInit, MetricsResponse } from './api.types'
 
 const METRICS_ORIGIN = import.meta.env.METRICS_ORIGIN ?? 'https://ttnqmmizksmixmxdkf75p4g7640tfuux.lambda-url.us-west-2.on.aws/'
 
-export class FetchError extends Error {
-    response: Response | undefined
-}
-
 /**
  * Fetch API wrapper that throws on 400+ http status.
  */
@@ -22,9 +18,7 @@ export async function wfetch (resource: RequestInfo | URL, opts: RequestInit = {
         let message = await response.json().then(d => d.message).catch(() => null)
         message = `${message ?? (response.statusText || response.status)}`
 
-        const error = new FetchError(message)
-        error.response = response
-        throw error
+        throw new Error(message)
     }
 
     return response

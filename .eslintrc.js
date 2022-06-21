@@ -8,7 +8,8 @@ module.exports = {
     ],
     plugins: ['@typescript-eslint', 'jsx-a11y'],
     rules: {
-        indent: ['error', 4]
+        indent: ['error', 4],
+        'jsx-a11y/no-autofocus': ['off']
     },
     globals: {
         cl: true

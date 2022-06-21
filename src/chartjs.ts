@@ -11,6 +11,7 @@ import {
     Legend,
     Filler
 } from 'chart.js'
+import './chartjs-dayjs-adapter'
 
 ChartJS.register(
     CategoryScale,
@@ -26,7 +27,7 @@ ChartJS.register(
 )
 
 const { datasets, elements, interaction, plugins, scales } = ChartJS.defaults
-//console.log(ChartJS.defaults)
+// console.log(ChartJS.defaults)
 
 const defaultColor = 'rgb(226 232 240)' // text-slate-200
 const defaultColorLight = 'rgb(226 232 240 / .1)'

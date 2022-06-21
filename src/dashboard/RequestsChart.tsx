@@ -11,7 +11,7 @@ interface RequestsChartProps extends ChartProps {
 
 export default function RequestsChart (props: RequestsChartProps) {
     const { metrics, dateRange, isLoading } = props
-    const options: ChartOptions = {
+    const options: ChartOptions<'line'> = {
         plugins: {
             title: {
                 display: true,

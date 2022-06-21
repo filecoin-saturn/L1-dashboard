@@ -13,7 +13,7 @@ interface BandwidthChartProps extends ChartProps {
 export default function BandwidthChart (props: BandwidthChartProps) {
     const { dateRange, metrics, isLoading } = props
 
-    const options: ChartOptions = {
+    const options: ChartOptions<'line'> = {
         plugins: {
             title: {
                 display: true,

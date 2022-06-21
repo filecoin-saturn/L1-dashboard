@@ -17,8 +17,12 @@ function FilAddressForm (props: FilAddressFormProps) {
     const [isValid, setIsValid] = useState(true)
     const navigate = useNavigate()
 
-    const handleSubmit = (e?: FormEvent<HTMLFormElement>) => {
-        e?.preventDefault()
+    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        handleAddress()
+    }
+
+    const handleAddress = () => {
         setIsValid(true)
 
         if (address) {
@@ -58,10 +62,10 @@ function FilAddressForm (props: FilAddressFormProps) {
                 onChange={e => setAddress(e.target.value)}
                 autoFocus={props.autoFocus}
                 required/>
-            <span onClick={handleSubmit}>
+            <button onClick={handleAddress}>
                 <SearchIcon className={`absolute right-2 top-0 bottom-0
                     m-auto cursor-pointer text-slate-100 hover:text-sky-700 ${iconClasses}`} />
-            </span>
+            </button>
             {!isValid && <p className="absolute top-[105%] text-red-500">Invalid FIL address</p>}
         </form>
     )

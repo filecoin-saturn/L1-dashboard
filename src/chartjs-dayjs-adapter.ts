@@ -1,11 +1,34 @@
-// Modified from https://github.com/chartjs/chartjs-adapter-dayjs/blob/master/src/index.js
-import { _adapters } from 'chart.js'
-import dayjs from 'dayjs'
-import utc from 'dayjs/plugin/utc'
+// Copied from https://gitlab.com/mmillerbkg/chartjs-adapter-dayjs/-/blob/master/src/index.ts
 
-if (!dayjs.prototype.utc) {
-    dayjs.extend(utc)
-}
+import { _adapters } from 'chart.js'
+
+import dayjs, { QUnitType } from 'dayjs'
+
+import type { TimeUnit } from 'chart.js'
+
+// Needed to handle the custom parsing
+import CustomParseFormat from 'dayjs/plugin/customParseFormat'
+
+// Needed to handle quarter format
+import AdvancedFormat from 'dayjs/plugin/advancedFormat'
+
+// Needed to handle adding/subtracting quarter
+import QuarterOfYear from 'dayjs/plugin/quarterOfYear'
+
+// Needed to handle localization format
+import LocalizedFormat from 'dayjs/plugin/localizedFormat'
+
+import isoWeek from 'dayjs/plugin/isoWeek'
+
+dayjs.extend(AdvancedFormat)
+
+dayjs.extend(QuarterOfYear)
+
+dayjs.extend(LocalizedFormat)
+
+dayjs.extend(CustomParseFormat)
+
+dayjs.extend(isoWeek)
 
 const FORMATS = {
     datetime: 'MMM D, YYYY, h:mm:ss a',
@@ -21,43 +44,45 @@ const FORMATS = {
 }
 
 _adapters._date.override({
-    _id: 'dayjs', // DEBUG ONLY
+    // _id: 'dayjs', //DEBUG,
+    formats: () => FORMATS,
+    parse: function (value: any, format?: TimeUnit) {
+        const valueType = typeof value
 
-    formats: function () {
-        return FORMATS
-    },
+        if (value === null || valueType === 'undefined') {
+            return null
+        }
 
-    parse: function (value, format) {
-        if (typeof value === 'string' && typeof format === 'string') {
-            value = dayjs.utc(value, format)
+        if (valueType === 'string' && typeof format === 'string') {
+            return dayjs(value, format).isValid() ? dayjs(value, format).valueOf() : null
         } else if (!(value instanceof dayjs)) {
-            value = dayjs.utc(value)
+            return dayjs(value).isValid() ? dayjs(value).valueOf() : null
         }
-        return value.isValid() ? value.valueOf() : null
+        return null
     },
-
-    format: function (time, format) {
-        return dayjs.utc(time).format(format)
+    format: function (time: any, format: TimeUnit): string {
+        return dayjs(time).format(format)
     },
-
-    add: function (time, amount, unit) {
-        return dayjs.utc(time).add(amount, unit).valueOf()
+    add: function (time: any, amount: number, unit: QUnitType & TimeUnit) {
+        return dayjs(time).add(amount, unit).valueOf()
     },
-
-    diff: function (max, min, unit) {
-        return dayjs.utc(max).diff(dayjs.utc(min), unit)
+    diff: function (max: any, min: any, unit: TimeUnit) {
+        return dayjs(max).diff(dayjs(min), unit)
     },
-
-    startOf: function (time, unit, weekday) {
-        time = dayjs.utc(time)
+    startOf: function (time: any, unit: (TimeUnit & QUnitType) | 'isoWeek', weekday?: number) {
         if (unit === 'isoWeek') {
-            weekday = Math.trunc(Math.min(Math.max(0, weekday), 6))
-            return time.isoWeekday(weekday).startOf('day').valueOf()
-        }
-        return time.startOf(unit).valueOf()
-    },
+            // Ensure that weekday has a valid format
+            // const formattedWeekday
 
-    endOf: function (time, unit) {
-        return dayjs.utc(time).endOf(unit).valueOf()
+            const validatedWeekday: number =
+        typeof weekday === 'number' && weekday > 0 && weekday < 7 ? weekday : 1
+
+            return dayjs(time).isoWeekday(validatedWeekday).startOf('day').valueOf()
+        }
+
+        return dayjs(time).startOf(unit).valueOf()
+    },
+    endOf: function (time: any, unit: TimeUnit & QUnitType) {
+        return dayjs(time).endOf(unit).valueOf()
     }
 })
