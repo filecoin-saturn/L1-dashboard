@@ -1,5 +1,5 @@
 {
-  "name": "saturn-l2-webui",
+  "name": "saturn-webui",
   "private": true,
   "version": "0.0.10",
   "description": "A frontend UI for the Saturn L2 node.",
@@ -51,9 +51,9 @@
   "license": "(Apache-2.0 AND MIT)",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/filecoin-project/saturn-l2-webui.git"
+    "url": "git+https://github.com/filecoin-project/saturn-webui.git"
   },
   "bugs": {
-    "url": "https://github.com/filecoin-project/saturn-l2-webui/issues"
+    "url": "https://github.com/filecoin-project/saturn-webui/issues"
   }
 }
