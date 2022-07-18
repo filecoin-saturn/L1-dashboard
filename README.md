@@ -22,7 +22,9 @@ This will start a development server for the frontend. Follow the Saturn L2 docs
 
 ## Releasing
 
-1. Commit changes and ensure everything is merged into `main` branch
+Creates a new Github Release and updates the [dashboard.strn.network](https://dashboard.strn.network) website.
+
+1. Commit changes to the `main` branch
 1. Update the version (`npm version [major|minor|patch]`, it will create a new tag `vN.N.N`, note it down)
 1. Push `main` branch and the `vN.N.N` tag to GitHub: `git push --atomic origin vN.N.N`
 1. Modify the Saturn L2 [release workflow](https://github.com/filecoin-project/saturn-l2/blob/main/.github/workflows/release.yml) to reference to new tag `vN.N.N`.
