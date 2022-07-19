@@ -8,9 +8,9 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "eslint": "eslint src/ test/",
-    "test": "vitest",
-    "test:unit": "vitest test/unit",
-    "test:e2e": "vitest test/unit",
+    "test": "npm run build && vitest",
+    "test:unit": "npm run build && vitest test/unit",
+    "test:e2e": "npm run build && vitest test/e2e",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
