@@ -6,10 +6,14 @@
 // you must install dayjs.
 
 import dayjs, { ManipulateType } from 'dayjs'
+import duration from 'dayjs/plugin/duration'
 import utc from 'dayjs/plugin/utc'
 
 if (!dayjs.prototype.utc) {
     dayjs.extend(utc)
+}
+if (!dayjs.prototype.duration) {
+    dayjs.extend(duration)
 }
 
 export const startOfToday = () => dayjs.utc().startOf('day').toDate()
@@ -17,7 +21,7 @@ export const startOfToday = () => dayjs.utc().startOf('day').toDate()
 export const endOfDay = (date: Date) => dayjs.utc(date).endOf('day').toDate()
 
 export function pastDateRange (unit: ManipulateType = 'week', count = 1) {
-    const endDateObj = dayjs.utc().add(1, 'day').startOf('day')
+    const endDateObj = dayjs.utc().startOf('minute')
     const endDate = endDateObj.toDate()
     const startDate = endDateObj.subtract(count, unit).toDate()
 

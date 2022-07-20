@@ -6,7 +6,9 @@ export interface ChartProps {
     dateRange: {
         startDate: Date
         endDate: Date
-    }
+    },
+    xScale: object,
+    spanGaps: number
 }
 
 export interface ChartContainerProps {

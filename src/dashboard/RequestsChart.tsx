@@ -1,4 +1,3 @@
-import dayjs from 'dayjs'
 import { Line } from 'react-chartjs-2'
 
 import { Metric } from '@/api.types'
@@ -10,7 +9,7 @@ interface RequestsChartProps extends ChartProps {
 }
 
 export default function RequestsChart (props: RequestsChartProps) {
-    const { metrics, dateRange, isLoading } = props
+    const { metrics, xScale, isLoading, spanGaps } = props
     const options: ChartOptions<'line'> = {
         plugins: {
             title: {
@@ -19,14 +18,7 @@ export default function RequestsChart (props: RequestsChartProps) {
             }
         },
         scales: {
-            x: {
-                type: 'time',
-                time: {
-                    unit: 'day'
-                },
-                min: dateRange.startDate.getTime(),
-                max: dayjs.utc(dateRange.endDate).subtract(1, 'day').valueOf()
-            }
+            x: xScale
         }
     }
 
@@ -34,7 +26,8 @@ export default function RequestsChart (props: RequestsChartProps) {
         labels: metrics.map(m => m.startTime),
         datasets: [
             {
-                data: metrics.map(m => m.numRequests)
+                data: metrics.map(m => m.numRequests),
+                spanGaps
             }
         ]
     }

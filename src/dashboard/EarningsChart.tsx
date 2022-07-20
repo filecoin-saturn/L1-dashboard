@@ -1,4 +1,3 @@
-import dayjs from 'dayjs'
 import { Line } from 'react-chartjs-2'
 
 import { Earning } from '@/api.types'
@@ -10,7 +9,7 @@ interface EarningsChartProps extends ChartProps {
 }
 
 export default function EarningsChart (props: EarningsChartProps) {
-    const { earnings, dateRange, isLoading } = props
+    const { earnings, xScale, isLoading, spanGaps } = props
     const options: ChartOptions<'line'> = {
         plugins: {
             title: {
@@ -24,14 +23,7 @@ export default function EarningsChart (props: EarningsChartProps) {
             }
         },
         scales: {
-            x: {
-                type: 'time',
-                time: {
-                    unit: 'day'
-                },
-                min: dateRange.startDate.getTime(),
-                max: dayjs.utc(dateRange.endDate).subtract(1, 'day').valueOf()
-            },
+            x: xScale,
             y: {
                 ticks: {
                     callback: val => `${val} FIL`
@@ -45,7 +37,7 @@ export default function EarningsChart (props: EarningsChartProps) {
         datasets: [
             {
                 data: earnings.map(e => e.filAmount),
-                spanGaps: 1000 * 60 * 60 * 24 // 1 day,
+                spanGaps
             }
         ]
     }

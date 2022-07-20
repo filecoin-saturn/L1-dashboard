@@ -1,5 +1,4 @@
 import bytes from 'bytes'
-import dayjs from 'dayjs'
 import { Line } from 'react-chartjs-2'
 
 import { Metric } from '@/api.types'
@@ -11,7 +10,7 @@ interface BandwidthChartProps extends ChartProps {
 }
 
 export default function BandwidthChart (props: BandwidthChartProps) {
-    const { dateRange, metrics, isLoading } = props
+    const { xScale, metrics, isLoading, spanGaps } = props
 
     const options: ChartOptions<'line'> = {
         plugins: {
@@ -26,14 +25,7 @@ export default function BandwidthChart (props: BandwidthChartProps) {
             }
         },
         scales: {
-            x: {
-                type: 'time',
-                time: {
-                    unit: 'day'
-                },
-                min: dateRange.startDate.getTime(),
-                max: dayjs.utc(dateRange.endDate).subtract(1, 'day').valueOf()
-            },
+            x: xScale,
             y: {
                 ticks: {
                     callback: val => bytes(Number(val), { unitSeparator: ' ' })
@@ -46,7 +38,8 @@ export default function BandwidthChart (props: BandwidthChartProps) {
         labels: metrics.map(m => m.startTime),
         datasets: [
             {
-                data: metrics.map(m => m.numBytes)
+                data: metrics.map(m => m.numBytes),
+                spanGaps
             }
         ]
     }

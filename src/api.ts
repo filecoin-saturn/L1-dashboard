@@ -24,11 +24,12 @@ export async function wfetch (resource: RequestInfo | URL, opts: RequestInit = {
     return response
 }
 
-export async function fetchMetrics (filAddress: string, startDate: Date, endDate: Date) {
+export async function fetchMetrics (filAddress: string, startDate: Date, endDate: Date, step: string) {
     const url = new URL(METRICS_ORIGIN)
     url.searchParams.set('filAddress', filAddress)
     url.searchParams.set('startDate', `${startDate.getTime()}`)
     url.searchParams.set('endDate', `${endDate.getTime()}`)
+    url.searchParams.set('step', step)
 
     const res: MetricsResponse = await wfetch(url).then(r => r.json())
 
