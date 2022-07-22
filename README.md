@@ -20,6 +20,10 @@ $ npm run dev
 
 This will start a development server for the frontend. Follow the Saturn L2 docs to setup the backend.
 
+## Tips
+
+* Use the special "all" FIL wallet address to view metrics for all of Saturn.
+
 ## Releasing
 
 Creates a new Github Release and updates the [dashboard.strn.network](https://dashboard.strn.network) website.
