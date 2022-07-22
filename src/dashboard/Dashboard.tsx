@@ -2,7 +2,7 @@ import bytes from 'bytes'
 import dayjs from 'dayjs'
 import type { DurationUnitType } from 'dayjs/plugin/duration'
 import { Dispatch, ReactNode, SetStateAction, useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useSearchParams } from 'react-router-dom'
 
 import * as api from '@/api'
 import { MetricsResponse, TimePeriod } from '@/api.types'
@@ -17,45 +17,42 @@ interface OverviewProps {
     children?: ReactNode
 }
 
-function periodToDateOptions (period: TimePeriod) {
+function createChartProps (period: TimePeriod) {
     let dateRange
-    let step: DurationUnitType
+    let step: DurationUnitType // group by this time unit
+    let labelUnit: DurationUnitType
 
     switch (period) {
     case TimePeriod.HOUR:
         dateRange = pastDateRange('hour')
         step = 'minute'
+        labelUnit = step
         break
     case TimePeriod.WEEK:
         dateRange = pastDateRange('week')
-        step = 'day'
+        step = 'hour'
+        labelUnit = 'day'
         break
     case TimePeriod.TWO_WEEK:
         dateRange = pastDateRange('week', 2)
-        step = 'day'
+        step = 'hour'
+        labelUnit = 'day'
         break
     case TimePeriod.DAY:
     default:
         dateRange = pastDateRange('day')
         step = 'hour'
+        labelUnit = step
         break
     // case TimePeriod.MONTH:
     //     dateRange = pastDateRange('month')
     //     break
     }
 
-    return { dateRange, step }
-}
-
-function createChartProps (
-    dateRange: { startDate: Date, endDate: Date },
-    unit: DurationUnitType,
-    isLoading: boolean
-) {
     const xScale = {
         type: 'time',
         time: {
-            unit
+            unit: labelUnit
         },
         min: dateRange.startDate.getTime(),
         max: dateRange.endDate.getTime()
@@ -63,9 +60,9 @@ function createChartProps (
 
     // https://github.com/chartjs/Chart.js/pull/6993
     // Break the line chart when missing a data point.
-    const spanGaps = dayjs.duration(1, unit).asMilliseconds()
+    const spanGaps = dayjs.duration(1, step).asMilliseconds()
 
-    return { dateRange, xScale, spanGaps, isLoading }
+    return { dateRange, xScale, step, spanGaps, isLoading: false }
 }
 
 function SelectTimePeriod (
@@ -119,45 +116,59 @@ function Overview (props: OverviewProps) {
 
 function Dashboard () {
     const { address = '' } = useParams()
+    const [searchParams, setSearchParams] = useSearchParams()
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<null | string>(null)
 
+    const defaultPeriod = searchParams.get('period') as TimePeriod ?? TimePeriod.WEEK
+    const [period, setPeriod] = useState<TimePeriod>(defaultPeriod)
     const [
         metricsRes, setMetricsRes
     ] = useState<MetricsResponse>({ earnings: [], nodes: [], metrics: [] })
 
-    const [period, setPeriod] = useState<TimePeriod>(TimePeriod.WEEK)
-    const { dateRange, step } = periodToDateOptions(period)
-    const { startDate, endDate } = dateRange
+    const chartProps = createChartProps(period)
 
-    // Don't update charts until data is fetched.
-    // It looks weird if charts update immediately.
-    const [chartOpts, setChartOpts] = useState({ dateRange, step })
+    // Don't update chart axes until data is fetched.
+    // It looks weird if axes update before data does.
+    const [chartPropsFinal, setChartPropsFinal] = useState(chartProps)
+    chartPropsFinal.isLoading = isLoading
 
-    const fetchData = async () => {
+    useEffect(() => {
         if (!address) { return }
 
-        try {
+        searchParams.set('period', period)
+        setSearchParams(searchParams)
+
+        const controller = new AbortController()
+
+        const fetchData = async () => {
             setIsLoading(true)
             setError(null)
 
-            const metricsRes = await api.fetchMetrics(
-                address, startDate, endDate, step)
-            setMetricsRes(metricsRes)
-            setChartOpts({ dateRange, step })
-        } catch (err) {
-            if (err instanceof Error) {
-                setError(err?.message ?? 'Error retrieving metrics.')
-            }
-        } finally {
-            setIsLoading(false)
-        }
-    }
+            try {
+                const { startDate, endDate } = chartProps.dateRange
 
-    useEffect(() => { fetchData() }, [address, period])
+                const metricsRes = await api.fetchMetrics(
+                    address, startDate, endDate, chartProps.step, controller.signal)
+                setMetricsRes(metricsRes)
+                setChartPropsFinal(chartProps)
+            } catch (err) {
+                if (err instanceof Error && !controller.signal.aborted) {
+                    setError(err?.message ?? 'Error retrieving metrics.')
+                }
+            } finally {
+                if (!controller.signal.aborted) {
+                    setIsLoading(false)
+                }
+            }
+        }
+
+        fetchData()
+
+        return () => controller.abort()
+    }, [address, period])
 
     const { earnings, metrics } = metricsRes
-    const chartProps = createChartProps(chartOpts.dateRange, chartOpts.step, isLoading)
 
     return (
         <div className="flex-1 flex flex-col gap-4 mt-8">
@@ -166,9 +177,9 @@ function Dashboard () {
                 <Overview {...{ metricsRes, address }}>
                     <SelectTimePeriod period={period} setPeriod={setPeriod}/>
                 </Overview>
-                <EarningsChart earnings={earnings} {...chartProps} />
-                <RequestsChart metrics={metrics} {...chartProps} />
-                <BandwidthChart metrics={metrics} {...chartProps} />
+                <EarningsChart earnings={earnings} {...chartPropsFinal} />
+                <RequestsChart metrics={metrics} {...chartPropsFinal} />
+                <BandwidthChart metrics={metrics} {...chartPropsFinal} />
             </div>
         </div>
     )

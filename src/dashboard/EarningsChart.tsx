@@ -8,6 +8,7 @@ interface EarningsChartProps extends ChartProps {
     earnings: Earning[]
 }
 
+// Chart config must take into account that earnings are calculated once per day
 export default function EarningsChart (props: EarningsChartProps) {
     const { earnings, xScale, isLoading, spanGaps } = props
     const options: ChartOptions<'line'> = {
@@ -37,7 +38,7 @@ export default function EarningsChart (props: EarningsChartProps) {
         datasets: [
             {
                 data: earnings.map(e => e.filAmount),
-                spanGaps
+                spanGaps: 1000 * 60 * 60 * 24 // 1 day
             }
         ]
     }

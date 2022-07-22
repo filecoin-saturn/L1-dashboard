@@ -41,7 +41,7 @@ ChartJS.defaults.maintainAspectRatio = false
 datasets.line.fill = 'origin'
 datasets.line.spanGaps = false
 
-elements.point.radius = 2
+elements.point.radius = 0.5
 elements.point.hoverRadius = 4
 
 elements.line.borderColor = 'rgb(53 162 235)'
