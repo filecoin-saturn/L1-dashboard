@@ -10,7 +10,7 @@ interface EarningsChartProps extends ChartProps {
 
 // Chart config must take into account that earnings are calculated once per day
 export default function EarningsChart (props: EarningsChartProps) {
-    const { earnings, xScale, isLoading, spanGaps } = props
+    const { earnings, xScale, isLoading } = props
     const options: ChartOptions<'line'> = {
         plugins: {
             title: {
