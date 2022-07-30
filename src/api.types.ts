@@ -25,11 +25,11 @@ export interface RequestInit extends globalThis.RequestInit {
 }
 
 export enum TimePeriod {
-    HOUR = '1 Hour',
+    //HOUR = '1 Hour',
     DAY = '24 Hours',
     WEEK = '7 Days',
     TWO_WEEK = '14 Days',
-    // MONTH = '30 Days',
+    MONTH = '30 Days',
     // TODO: Need to optimize db for 6 month query.
     // SIX_MONTH = '6 Months'
 }

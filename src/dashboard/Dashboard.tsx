@@ -23,18 +23,18 @@ function createChartProps (period: TimePeriod) {
     let labelUnit: DurationUnitType
 
     switch (period) {
-    case TimePeriod.HOUR:
-        dateRange = pastDateRange('hour')
-        step = 'minute'
-        labelUnit = step
-        break
-    case TimePeriod.WEEK:
-        dateRange = pastDateRange('week')
-        step = 'hour'
+    case TimePeriod.MONTH:
+        dateRange = pastDateRange('month')
+        step = 'day'
         labelUnit = 'day'
         break
     case TimePeriod.TWO_WEEK:
         dateRange = pastDateRange('week', 2)
+        step = 'hour'
+        labelUnit = 'day'
+        break
+    case TimePeriod.WEEK:
+        dateRange = pastDateRange('week')
         step = 'hour'
         labelUnit = 'day'
         break
@@ -44,9 +44,6 @@ function createChartProps (period: TimePeriod) {
         step = 'hour'
         labelUnit = step
         break
-    // case TimePeriod.MONTH:
-    //     dateRange = pastDateRange('month')
-    //     break
     }
 
     const xScale = {
