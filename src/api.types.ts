@@ -25,7 +25,7 @@ export interface RequestInit extends globalThis.RequestInit {
 }
 
 export enum TimePeriod {
-    //HOUR = '1 Hour',
+    // HOUR = '1 Hour',
     DAY = '24 Hours',
     WEEK = '7 Days',
     TWO_WEEK = '14 Days',
