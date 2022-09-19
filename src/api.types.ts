@@ -1,5 +1,5 @@
 export interface Node {
-    active: boolean
+    state: 'active' | 'inactive' | 'draining' | 'down'
     count: number
 }
 
@@ -26,7 +26,7 @@ export interface RequestInit extends globalThis.RequestInit {
 
 export enum TimePeriod {
     // HOUR = '1 Hour',
-    DAY = '24 Hours',
+    DAY = '1 Day',
     WEEK = '7 Days',
     TWO_WEEK = '14 Days',
     MONTH = '30 Days',

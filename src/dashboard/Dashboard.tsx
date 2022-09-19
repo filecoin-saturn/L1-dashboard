@@ -24,7 +24,7 @@ function createChartProps (period: TimePeriod) {
 
     switch (period) {
     case TimePeriod.MONTH:
-        dateRange = pastDateRange('month')
+        dateRange = pastDateRange('day', 30)
         step = 'day'
         labelUnit = 'day'
         break
@@ -87,8 +87,9 @@ function Overview (props: OverviewProps) {
     const totalEarnings = earnings.reduce((memo, earning) => memo + earning.filAmount, 0)
     const totalBandwidth = metrics.reduce((memo, metric) => memo + metric.numBytes, 0)
     const totalRetrievals = metrics.reduce((memo, metric) => memo + metric.numRequests, 0)
-    const numActiveNodes = nodes.find(d => d.active)?.count ?? 0
-    const numInactiveNodes = nodes.find(d => !d.active)?.count ?? 0
+    const numActiveNodes = nodes.find(d => d.state === 'active')?.count ?? 0
+    const numInactiveNodes = nodes.find(d => d.state === 'inactive')?.count ?? 0
+    const numDownNodes = nodes.find(d => d.state === 'down')?.count ?? 0
 
     return (
         <div className="flex flex-col max-w-[600px] w-[100%] h-[300px] rounded">
@@ -102,6 +103,7 @@ function Overview (props: OverviewProps) {
                 <div>
                     {numActiveNodes.toLocaleString()} Active
                     {numInactiveNodes > 0 && `, ${numInactiveNodes} Inactive`}
+                    {numDownNodes > 0 && `, ${numDownNodes} Down`}
                 </div>
                 <div>Earnings</div><div>{totalEarnings.toLocaleString()} FIL</div>
                 <div>Bandwidth</div><div>{bytes(totalBandwidth, { unitSeparator: ' ' })}</div>
