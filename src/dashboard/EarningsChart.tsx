@@ -34,7 +34,7 @@ export default function EarningsChart (props: EarningsChartProps) {
     }
 
     const data = {
-        labels: earnings.map(e => e.earningsDate),
+        labels: earnings.map(e => e.timestamp),
         datasets: [
             {
                 data: earnings.map(e => e.filAmount),

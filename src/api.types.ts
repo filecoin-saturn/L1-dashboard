@@ -10,7 +10,7 @@ export interface Metric {
 }
 
 export interface Earning {
-    earningsDate: Date
+    timestamp: Date
     filAmount: number
 }
 

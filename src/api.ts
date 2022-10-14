@@ -35,12 +35,8 @@ export async function fetchMetrics (
 
     const res: MetricsResponse = await wfetch(url, { signal }).then(r => r.json())
 
-    res.earnings.forEach(e => {
-        e.earningsDate = new Date(e.earningsDate)
-    })
-    res.metrics.forEach(m => {
-        m.startTime = new Date(m.startTime)
-    })
+    res.earnings.forEach(e => { e.timestamp = new Date(e.timestamp) })
+    res.metrics.forEach(m => { m.startTime = new Date(m.startTime) })
 
     return res
 }
