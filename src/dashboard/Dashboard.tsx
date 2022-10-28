@@ -105,7 +105,7 @@ function Overview (props: OverviewProps) {
                     {numInactiveNodes > 0 && `, ${numInactiveNodes} Inactive`}
                     {numDownNodes > 0 && `, ${numDownNodes} Down`}
                 </div>
-                <div>Earnings</div><div>{totalEarnings.toLocaleString()} FIL</div>
+                <div>Estimated Earnings</div><div>{totalEarnings.toLocaleString()} FIL</div>
                 <div>Bandwidth</div><div>{bytes(totalBandwidth, { unitSeparator: ' ' })}</div>
                 <div>Retrievals</div><div>{totalRetrievals.toLocaleString()}</div>
             </div>
