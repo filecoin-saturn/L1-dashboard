@@ -4,7 +4,7 @@
 [![](https://img.shields.io/badge/project-Filecoin-blue.svg?style=flat-square)](https://filecoin.io/)
 [![ci](https://github.com/filecoin-project/saturn-webui/actions/workflows/ci.yml/badge.svg)](https://github.com/filecoin-project/saturn-webui/actions/workflows/ci.yml)
 
-A frontend UI for Filecoin Saturn's [L1](https://github.com/filecoin-saturn/L1-node) and [L2](https://github.com/filecoin-saturn/L2-node) node.
+A dashboard UI for Filecoin Saturn's [L1](https://github.com/filecoin-saturn/L1-node) node.
 
 Hosted at [https://dashboard.strn.network](https://dashboard.strn.network)
 
