@@ -1,6 +1,12 @@
 import { RequestInit, MetricsResponse } from './api.types'
 
-const METRICS_ORIGIN = import.meta.env.VITE_METRICS_ORIGIN ?? 'https://ln3tnkd4d5uiufjgimi6jlkmci0bceff.lambda-url.us-west-2.on.aws/'
+// on localhost (dev env) we need to set the metrics origin to local /metrics endpoint
+// so that we proxy those calls through vite local server to get around cors on aws
+// endpoints being are allowed only on specific domains (see proxy in vite.config.ts)
+const METRICS_ORIGIN = import.meta.env.DEV
+    ? window.location.origin + '/metrics'
+    : import.meta.env.VITE_METRICS_ORIGIN ??
+    'https://ln3tnkd4d5uiufjgimi6jlkmci0bceff.lambda-url.us-west-2.on.aws/'
 
 /**
  * Fetch API wrapper that throws on 400+ http status.
