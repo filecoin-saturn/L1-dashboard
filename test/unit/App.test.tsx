@@ -1,7 +1,7 @@
-import { it, describe, expect } from 'vitest'
+import { it, describe, expect } from "vitest";
 
-describe('App test', () => {
-    it('Should show title', () => {
-        expect(1 + 1).toEqual(2)
-    })
-})
+describe("App test", () => {
+  it("Should show title", () => {
+    expect(1 + 1).toEqual(2);
+  });
+});
