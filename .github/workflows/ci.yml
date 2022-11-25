@@ -5,7 +5,7 @@ on:
     branches:
       - main
     tags:
-      - '*'
+      - "*"
   pull_request:
     branches:
       - main
@@ -61,7 +61,7 @@ jobs:
           if-no-files-found: error
 
   test-unit:
-    name: 'test:unit'
+    name: "test:unit"
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -89,7 +89,7 @@ jobs:
         run: npm run test:unit
 
   test-e2e:
-    name: 'test:e2e'
+    name: "test:e2e"
     needs: build
     runs-on: ubuntu-latest
     steps:

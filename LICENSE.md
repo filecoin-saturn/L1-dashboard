@@ -19,6 +19,7 @@ either express or implied. See each License for the specific language
 governing permissions and limitations under that License.
 
 <!--- SPDX-License-Identifier: Apache-2.0 OR MIT -->
+
 `SPDX-License-Identifier: Apache-2.0 OR MIT`
 
 Verbatim copies of both licenses are included below:
@@ -203,6 +204,7 @@ Verbatim copies of both licenses are included below:
 
    END OF TERMS AND CONDITIONS
 ```
+
 </details>
 
 <details><summary>MIT Software License</summary>
@@ -226,4 +228,5 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ```
+
 </details>

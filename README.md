@@ -24,7 +24,7 @@ This will start a development server for the frontend. Follow the Saturn L2 docs
 
 ## Tips
 
-* Use the special "all" FIL wallet address to view metrics for all of Saturn.
+- Use the special "all" FIL wallet address to view metrics for all of Saturn.
 
 ## Releasing
 
