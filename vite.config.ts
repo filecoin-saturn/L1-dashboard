@@ -1,7 +1,9 @@
 import * as path from "path";
 
+import { NodeGlobalsPolyfillPlugin } from "@esbuild-plugins/node-globals-polyfill";
 import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
+import inject from "@rollup/plugin-inject";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
@@ -11,6 +13,12 @@ export default defineConfig(({ command, mode }) => {
     // saturn-l2 depends on this path
     base: "/webui/",
     plugins: [react()],
+    optimizeDeps: {
+      esbuildOptions: {
+        define: { global: "globalThis" },
+        plugins: [NodeGlobalsPolyfillPlugin({ buffer: true })], // enable esbuild polyfill plugins
+      },
+    },
     server: {
       port: 3010,
       strictPort: true,
@@ -27,6 +35,11 @@ export default defineConfig(({ command, mode }) => {
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "./src"),
+      },
+    },
+    build: {
+      rollupOptions: {
+        plugins: [inject({ Buffer: ["Buffer", "Buffer"] })],
       },
     },
   };
