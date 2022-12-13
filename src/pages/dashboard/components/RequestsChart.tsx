@@ -1,8 +1,7 @@
-import { Line } from "react-chartjs-2";
-
-import { Metric } from "../api.types";
-import ChartContainer, { ChartProps } from "./ChartContainer";
 import { ChartOptions } from "chart.js";
+import { Line } from "react-chartjs-2";
+import { Metric } from "../../../api.types";
+import ChartContainer, { ChartProps } from "./ChartContainer";
 
 interface RequestsChartProps extends ChartProps {
   metrics: Metric[];

@@ -1,5 +1,5 @@
-import Loader from "../components/Loader";
 import { ReactNode } from "react";
+import Loader from "../../../components/Loader";
 
 export interface ChartProps {
   isLoading: boolean;

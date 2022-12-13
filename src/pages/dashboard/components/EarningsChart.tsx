@@ -1,8 +1,7 @@
-import { Line } from "react-chartjs-2";
-
-import { Earning } from "../api.types";
-import ChartContainer, { ChartProps } from "./ChartContainer";
 import { ChartOptions } from "chart.js";
+import { Line } from "react-chartjs-2";
+import { Earning } from "../../../api.types";
+import ChartContainer, { ChartProps } from "./ChartContainer";
 
 interface EarningsChartProps extends ChartProps {
   earnings: Earning[];

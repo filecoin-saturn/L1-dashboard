@@ -11,16 +11,38 @@ Hosted at [https://dashboard.strn.network](https://dashboard.strn.network)
 ## Install
 
 ```
-$ npm install
+npm install
 ```
 
 ## Development
 
 ```
-$ npm run dev
+npm run dev
 ```
 
 This will start a development server for the frontend. Follow the Saturn L2 docs to setup the backend.
+
+## WebUI
+
+This dashboard apart from being served as a standalone website, is also embedded in L2 node in what is called webui mode. In this mode navigation bar is hidden and only the address page is accessible.
+
+To develop dashboard in webui mode:
+
+```
+npm run dev:webui
+```
+
+To build dashboard in webui mode:
+
+```
+npm run build:webui
+```
+
+To preview webui dashboard build:
+
+```
+npm run preview:webui
+```
 
 ## Tips
 
