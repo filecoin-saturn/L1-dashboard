@@ -34,7 +34,7 @@ export default defineConfig(({ command, mode }) => {
     build: {
       rollupOptions: {
         // Buffer required for @glif/filecoin-address to work
-        plugins: [inject({ Buffer: ["Buffer", "Buffer"] })],
+        plugins: [inject({ Buffer: ["buffer", "Buffer"] })],
       },
     },
   };
