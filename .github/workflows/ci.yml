@@ -77,14 +77,11 @@ jobs:
 
       - run: npm ci
 
-      - name: Download build artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: saturn-webui_${{ github.sha }}
-          path: dist
-
       - name: Run E2E tests
         run: npm run test:e2e
+
+      - name: Run WebUI E2E tests
+        run: npm run test:webui-e2e
 
   # separate check for TS
   typecheck:
