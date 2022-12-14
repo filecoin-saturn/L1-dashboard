@@ -21,7 +21,7 @@
     "@esbuild-plugins/node-globals-polyfill": "^0.1.1",
     "@glif/filecoin-address": "^2.0.20",
     "@headlessui/react": "^1.7.5",
-    "@primer/octicons-react": "^17.9.0",
+    "@primer/octicons-react": "^17.10.0",
     "@rollup/plugin-inject": "^5.0.2",
     "ag-grid-react": "^28.2.1",
     "bytes": "^3.1.2",
@@ -62,7 +62,7 @@
     "tailwindcss": "^3.2.4",
     "typescript": "^4.9.4",
     "vite": "^4.0.1",
-    "vitest": "^0.25.7"
+    "vitest": "^0.25.8"
   },
   "author": "Protocol Labs",
   "license": "(Apache-2.0 AND MIT)",
