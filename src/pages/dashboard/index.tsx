@@ -3,13 +3,12 @@ import dayjs from "dayjs";
 import type { DurationUnitType } from "dayjs/plugin/duration";
 import { Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
-
-import * as api from "../api";
-import { MetricsResponse, TimePeriod } from "../api.types";
-import { pastDateRange } from "../date-utils";
-import RequestsChart from "./RequestsChart";
-import BandwidthChart from "./BandwidthChart";
-import EarningsChart from "./EarningsChart";
+import * as api from "../../api";
+import { MetricsResponse, TimePeriod } from "../../api.types";
+import { pastDateRange } from "../../date-utils";
+import BandwidthChart from "./components/BandwidthChart";
+import EarningsChart from "./components/EarningsChart";
+import RequestsChart from "./components/RequestsChart";
 
 interface OverviewProps {
   metricsRes: MetricsResponse;

@@ -1,7 +1,7 @@
-import * as path from "path";
-
+import { NodeGlobalsPolyfillPlugin } from "@esbuild-plugins/node-globals-polyfill";
 import { defineConfig, loadEnv } from "vite";
-import react from "@vitejs/plugin-react";
+import react from "@vitejs/plugin-react-swc";
+import inject from "@rollup/plugin-inject";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
@@ -9,8 +9,15 @@ export default defineConfig(({ command, mode }) => {
 
   return {
     // saturn-l2 depends on this path
-    base: "/webui/",
+    base: env.VITE_MODE_WEBUI ? "/webui/" : "/",
     plugins: [react()],
+    optimizeDeps: {
+      esbuildOptions: {
+        // Buffer required for @glif/filecoin-address to work
+        plugins: [NodeGlobalsPolyfillPlugin({ buffer: true })],
+        define: { global: "globalThis" },
+      },
+    },
     server: {
       port: 3010,
       strictPort: true,
@@ -24,9 +31,10 @@ export default defineConfig(({ command, mode }) => {
         },
       },
     },
-    resolve: {
-      alias: {
-        "@": path.resolve(__dirname, "./src"),
+    build: {
+      rollupOptions: {
+        // Buffer required for @glif/filecoin-address to work
+        plugins: [inject({ Buffer: ["buffer", "Buffer"] })],
       },
     },
   };

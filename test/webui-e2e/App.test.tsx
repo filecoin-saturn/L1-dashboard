@@ -6,7 +6,7 @@ import type { Browser, Page } from "puppeteer";
 
 const TEST_FILE_ADDRESS = "f16m5slrkc6zumruuhdzn557a5sdkbkiellron4qa";
 
-describe("website mode", async () => {
+describe("embed mode", async () => {
   let server: PreviewServer;
   let browser: Browser;
   let page: Page;
@@ -24,9 +24,9 @@ describe("website mode", async () => {
     });
   });
 
-  test("navbar should be visible", async () => {
+  test("navbar should be invisible", async () => {
     await page.goto(`${server.resolvedUrls.local[0]}/address/${TEST_FILE_ADDRESS}`);
     const navbar = (await page.$("[data-test-id=navbar]"))!;
-    expect(navbar).not.toBe(null);
+    expect(navbar).toBe(null);
   }, 60_000);
 });

@@ -2,7 +2,7 @@ import { validateAddressString } from "@glif/filecoin-address";
 import classNames from "classnames";
 import { FormEvent, useEffect, useState } from "react";
 
-import SearchIcon from "./SearchIcon";
+import { SearchIcon } from "@primer/octicons-react";
 import { useNavigate } from "react-router-dom";
 
 // Address with data: f16m5slrkc6zumruuhdzn557a5sdkbkiellron4qa

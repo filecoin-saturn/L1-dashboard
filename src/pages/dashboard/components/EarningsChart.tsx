@@ -1,8 +1,7 @@
-import { Line } from "react-chartjs-2";
-
-import { Earning } from "../api.types";
-import ChartContainer, { ChartProps } from "./ChartContainer";
 import { ChartOptions } from "chart.js";
+import { Line } from "react-chartjs-2";
+import { Earning } from "../../../api.types";
+import ChartContainer, { ChartProps } from "./ChartContainer";
 
 interface EarningsChartProps extends ChartProps {
   earnings: Earning[];
@@ -19,7 +18,7 @@ export default function EarningsChart(props: EarningsChartProps) {
       },
       tooltip: {
         callbacks: {
-          label: ({ raw }) => `${Number(raw).toLocaleString("en-US", { notation: "compact" })} FIL`,
+          label: ({ raw }) => `${Number(raw).toLocaleString()} FIL`,
         },
       },
     },
@@ -27,7 +26,7 @@ export default function EarningsChart(props: EarningsChartProps) {
       x: xScale,
       y: {
         ticks: {
-          callback: (val) => `${Number(val).toLocaleString("en-US", { notation: "compact" })} FIL`,
+          callback: (val) => `${val} FIL`,
         },
       },
     },
