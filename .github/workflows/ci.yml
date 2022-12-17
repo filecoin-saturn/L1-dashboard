@@ -204,6 +204,13 @@ jobs:
       AWS_REGION: us-west-2
     steps:
       - uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: arn:aws:iam::${{ secrets.PROD_AWS_ACCOUNT_NUMBER }}:role/l1-dashboard-ci
+
       - uses: actions/setup-node@v3
         with:
           node-version: 18
@@ -222,12 +229,6 @@ jobs:
         run: |
           npm ci
           npm run build
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-region: ${{ env.AWS_REGION }}
-          role-to-assume: arn:aws:iam::${{ secrets.PROD_AWS_ACCOUNT_NUMBER }}:role/l1-dashboard-ci
 
       - name: Push to S3
         env:
