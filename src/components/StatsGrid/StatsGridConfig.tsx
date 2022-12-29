@@ -172,6 +172,56 @@ export const columnDefs = [
     },
   },
   {
+    field: "bias",
+    headerName: "Weight",
+    sortable: true,
+    filter: "agNumberColumnFilter",
+    floatingFilter: true,
+    minWidth: 100,
+    cellRenderer: (params: any) => {
+      return (
+        <>
+          <div
+            className={classNames("overflow-clip text-ellipsis", {
+              "font-bold text-red-500": params.data.bias < -90,
+              "text-red-500": params.data.bias >= -90 && params.data.bias < -60,
+              "text-orange-500": params.data.bias >= -60 && params.data.bias < -30,
+              "text-yellow-500": params.data.bias >= -30 && params.data.bias < 0,
+            })}
+          >
+            {params.data.bias}
+          </div>
+          {params.data.HealthCheckFailures.length > 0 && (
+            <div
+              className={classNames("overflow-clip text-ellipsis", {
+                "text-red-500": params.data.HealthCheckFailures.length >= 4,
+                "text-orange-500": params.data.HealthCheckFailures.length < 4,
+              })}
+            >
+              {params.data.HealthCheckFailures.length} fail{params.data.HealthCheckFailures.length > 1 && "s"} / last
+              24h
+            </div>
+          )}
+        </>
+      );
+    },
+    tooltipComponent: HTMLTooltip,
+    tooltipComponentParams: { className: "capitalize" },
+    tooltipValueGetter: ({ data }: any) => {
+      const biases = asStrings(data.biases, (key: string, value: any) => value);
+
+      if (data.HealthCheckFailures.length) {
+        const fails = `${data.HealthCheckFailures.length} fail${
+          data.HealthCheckFailures.length > 1 ? "s" : ""
+        } in last 24 hours`;
+
+        return [...biases, "<hr />", fails];
+      }
+
+      return biases;
+    },
+  },
+  {
     field: "diskStats.usedDisk",
     headerName: "Disk Usage",
     sortable: true,
@@ -431,55 +481,6 @@ export const columnDefs = [
           <div className="overflow-clip text-ellipsis">{new Date(params.data.createdAt).toLocaleTimeString()}</div>
         </>
       );
-    },
-  },
-  {
-    field: "bias",
-    headerName: "Weight",
-    sortable: true,
-    filter: "agNumberColumnFilter",
-    floatingFilter: true,
-    cellRenderer: (params: any) => {
-      return (
-        <>
-          <div
-            className={classNames("overflow-clip text-ellipsis", {
-              "font-bold text-red-500": params.data.bias < -90,
-              "text-red-500": params.data.bias >= -90 && params.data.bias < -60,
-              "text-orange-500": params.data.bias >= -60 && params.data.bias < -30,
-              "text-yellow-500": params.data.bias >= -30 && params.data.bias < 0,
-            })}
-          >
-            {params.data.bias}
-          </div>
-          {params.data.HealthCheckFailures.length > 0 && (
-            <div
-              className={classNames("overflow-clip text-ellipsis", {
-                "text-red-500": params.data.HealthCheckFailures.length >= 4,
-                "text-orange-500": params.data.HealthCheckFailures.length < 4,
-              })}
-            >
-              {params.data.HealthCheckFailures.length} fail{params.data.HealthCheckFailures.length > 1 && "s"} / last
-              24h
-            </div>
-          )}
-        </>
-      );
-    },
-    tooltipComponent: HTMLTooltip,
-    tooltipComponentParams: { className: "capitalize" },
-    tooltipValueGetter: ({ data }: any) => {
-      const biases = asStrings(data.biases, (key: string, value: any) => value);
-
-      if (data.HealthCheckFailures.length) {
-        const fails = `${data.HealthCheckFailures.length} fail${
-          data.HealthCheckFailures.length > 1 ? "s" : ""
-        } in last 24 hours`;
-
-        return [...biases, "<hr />", fails];
-      }
-
-      return biases;
     },
   },
   {
