@@ -4,7 +4,7 @@ export default async function getAuthorizationToken(username: string, password: 
     headers: { Authorization: authorizationToken },
   });
 
-  if (response.status === 200) {
+  if (response.ok) {
     return authorizationToken;
   }
 
