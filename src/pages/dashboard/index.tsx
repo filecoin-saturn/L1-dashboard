@@ -172,7 +172,7 @@ function Dashboard() {
   const { earnings, metrics } = metricsRes;
 
   return (
-    <div className="mt-8 flex flex-1 flex-col gap-4">
+    <div className="mx-auto mt-8 flex max-w-7xl flex-1 flex-col gap-4">
       {error && <p className="text-center text-lg text-red-600">Error: {error}</p>}
       <div className="flex flex-wrap justify-center gap-12">
         <Overview {...{ metricsRes, address }}>
