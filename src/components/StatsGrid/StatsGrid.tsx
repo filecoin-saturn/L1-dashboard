@@ -20,24 +20,18 @@ export default function StatsGrid() {
     [setGridApi, setColumnApi]
   );
 
-  const onGridSizeChanged = useCallback(() => {
-    if (gridApi) {
-      gridApi.sizeColumnsToFit();
+  const autoSizeAllColumns = useCallback(() => {
+    if (columnApi) {
+      columnApi.autoSizeAllColumns();
     }
-  }, [gridApi]);
+  }, [columnApi]);
 
   useEffect(() => {
-    if (gridApi && columnApi) {
+    if (columnApi) {
       columnApi.setColumnsVisible(["operator"], Boolean(state.authorizationToken));
-      gridApi.sizeColumnsToFit();
+      columnApi.autoSizeAllColumns();
     }
-  }, [columnApi, gridApi, state.authorizationToken]);
-
-  useEffect(() => {
-    if (gridApi && state.nodes) {
-      gridApi.sizeColumnsToFit();
-    }
-  }, [gridApi, state.nodes]);
+  }, [columnApi, state.authorizationToken]);
 
   useEffect(() => {
     if (gridApi && columnApi && location.state) {
@@ -63,7 +57,9 @@ export default function StatsGrid() {
           enableCellTextSelection={true}
           ensureDomOrder={true}
           suppressColumnVirtualisation={true}
-          onGridSizeChanged={onGridSizeChanged}
+          onModelUpdated={autoSizeAllColumns}
+          onGridSizeChanged={autoSizeAllColumns}
+          onFirstDataRendered={autoSizeAllColumns}
           getRowId={(params) => params.data.id}
           onGridReady={onGridReady}
           tooltipShowDelay={0}
