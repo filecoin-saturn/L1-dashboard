@@ -53,7 +53,7 @@ export default function StatsGrid() {
           rowHeight={52}
           rowData={state.nodes}
           suppressCellFocus={true}
-          columnDefs={columnDefs}
+          columnDefs={columnDefs as any}
           enableCellTextSelection={true}
           ensureDomOrder={true}
           suppressColumnVirtualisation={true}
@@ -62,7 +62,8 @@ export default function StatsGrid() {
           onFirstDataRendered={autoSizeAllColumns}
           getRowId={(params) => params.data.id}
           onGridReady={onGridReady}
-          tooltipShowDelay={0}
+          tooltipShowDelay={0} // show without delay on mouse enter
+          tooltipHideDelay={99999} // do not hide unless mouse leaves
         ></AgGridReact>
       </div>
     </>
