@@ -48,9 +48,16 @@ npm run preview:webui
 
 - Use the special "all" FIL wallet address to view metrics for all of Saturn.
 
-## Releasing
+## Continuous Deployment
 
-Creates a new Github Release and updates the [dashboard.strn.network](https://dashboard.strn.network) website.
+This repository is connected to [fleek.co](https://app.fleek.co/) and set up to:
+
+- deploy production build automatically to IPFS on every update to `main` branch
+  - available via [dashboard-strn.on.fleek.co](https://dashboard-strn.on.fleek.co/) using fleek.co subdomain
+  - available via [dashboard.strn.network](https://dashboard.strn.network/) using CNAME record pointing at [dedicated Fleek CDN subdomain](https://b0cac29553481fefb931.b-cdn.net/)
+- deploy pull request previews of every branch with open pull request
+
+## Updating Saturn-L2 Release Version
 
 1. Commit changes to the `main` branch
 1. Update the version (`npm version [major|minor|patch]`, it will create a new tag `vN.N.N`, note it down)
