@@ -60,6 +60,7 @@ export default function StatsGrid() {
           onModelUpdated={autoSizeAllColumns}
           onGridSizeChanged={autoSizeAllColumns}
           onFirstDataRendered={autoSizeAllColumns}
+          onFilterChanged={autoSizeAllColumns}
           getRowId={(params) => params.data.id}
           onGridReady={onGridReady}
           tooltipShowDelay={0}
