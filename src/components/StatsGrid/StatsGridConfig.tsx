@@ -83,7 +83,7 @@ export const columnDefs = [
         ["Active", "Node is active and accepting new connections."],
         [
           "Draining",
-          "Node is being parepared for a software update by draining connections (waiting for existing connections to finish and not accepting any new connections) to restart gracefully. This is a temporary state, the node will become active again after the update.",
+          "Node is draining connections (waiting for existing connections to finish and not accepting any new connections) most likely in preparation for a software update and graceful restart. This is a temporary state, the node will become active again after the update.",
         ],
         [
           "Inactive",
