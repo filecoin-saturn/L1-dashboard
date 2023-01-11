@@ -91,7 +91,7 @@ export const columnDefs = [
         ],
         [
           "Down",
-          "Node has been failing health checks and has been removed from the network until it reports successful health checks again. It is also possible that node with that status has been manually blocked by the network operator for malicious activities.",
+          "Node has failed at least one health check in recent minutes and has been removed from the network until it reports successful health checks again. It is also possible that node with that status has been manually blocked by the network operator for malicious activities.",
         ],
       ];
 
@@ -149,7 +149,7 @@ export const columnDefs = [
     headerTooltip: (() => {
       return [
         htmlBold("Type and version of the node."),
-        "Type can be either L1 (layer 1) or L2 (layer 2, not yet available).",
+        "Type can be either L1 (level 1) or L2 (level 2, not yet available).",
         "Version is incrementable number that is increased with each software update.",
       ];
     })(),
@@ -167,7 +167,7 @@ export const columnDefs = [
     headerTooltip: (() => {
       return [
         htmlBold("IP address and ISP of the node."),
-        "IP address is obsured and not available publicly to protect the node from direct access.",
+        "IP address is obscured and not available publicly to protect the node from direct access.",
         htmlSeparator(),
         htmlItalic(
           "This data is currently provided by an external service and can be inaccurate - we are working to remedy this situation."
@@ -207,7 +207,7 @@ export const columnDefs = [
     headerTooltip: (() => {
       return [
         htmlBold("Physical location of the node based on the ip address."),
-        "Location plays important role in determining node profitability. Nodes in the same location will share the traffic and therefore the revenue. It is best to set up nodes in locations that have potentially high traffic and limited node",
+        "Location plays important role in determining node profitability. Nodes in the same location will share the traffic and therefore the revenue. It is best to set up nodes in locations that have potentially high traffic and limited coverage.",
         htmlSeparator(),
         htmlItalic(
           "This data is currently provided by an external service and can be inaccurate - we are working to remedy this situation."
@@ -249,7 +249,7 @@ export const columnDefs = [
         htmlBold("Weigth of the node in the network."),
         "This value indicates what is the probability of the node being selected to serve the traffic - the higher the value, the higher the probability.",
         "This value is recalculated on every node registration based on number of factors including TTFB, Speedtest upload rate result, CPU load and number of cores, cache hit ratio, error rate and health check failures.",
-        "For nodes joining the network it can take several hours or days to reach the optimal value based on the nodes performance and network traffic.",
+        "For nodes joining the network it can take several days to reach the optimal value based on the nodes performance and network traffic.",
         "Consistently low weight can indicate a problem with one of the factors mentioned above - you should check whether any of the stats stick out and try to resolve the issue.",
       ];
     })(),
