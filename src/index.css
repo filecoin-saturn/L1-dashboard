@@ -30,4 +30,5 @@ body {
 .ag-theme-saturn .ag-tooltip {
   background-color: var(--ag-header-background-color);
   border: 1px solid var(--ag-header-foreground-color);
+  @apply max-w-[300px];
 }

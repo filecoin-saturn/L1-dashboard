@@ -5,6 +5,13 @@ import copy from "copy-text-to-clipboard";
 import { Link } from "react-router-dom";
 import HTMLTooltip from "./HTMLTooltip";
 
+// helper wrapper functions to format tooltip html content
+const htmlWrapper = (text: string, className = "") => `<div class="${className}">${text}</div>`;
+const htmlItalic = (text: string, className = "") => `<span class="italic ${className}">${text}</span>`;
+const htmlListItem = (text: string, className = "") => `<li class="${className}">${text}</li>`;
+const htmlBold = (text: string, className = "") => `<span class="font-bold ${className}">${text}</span>`;
+const htmlSeparator = (className = "") => `<hr class="my-2 bg-slate-600 h-[1px] border-0 ${className}" />`;
+
 /**
  * Convert an object to an array of strings.
  * @param object object to convert to an array of strings
@@ -70,10 +77,44 @@ export const columnDefs = [
 
       return <span className={className}>{params.value}</span>;
     },
+    tooltipComponent: HTMLTooltip,
+    headerTooltip: (() => {
+      const states = [
+        ["Active", "Node is active and accepting new connections."],
+        [
+          "Draining",
+          "Node is draining connections (waiting for existing connections to finish and not accepting any new connections) most likely in preparation for a software update and graceful restart. This is a temporary state, the node will become active again after the update.",
+        ],
+        [
+          "Inactive",
+          "Node has not updated its status for a while and has been removed from the network until it reports its status again.",
+        ],
+        [
+          "Down",
+          "Node has failed at least one health check in recent minutes and has been removed from the network until it reports successful health checks again. It is also possible that node with that status has been manually blocked by the network operator for malicious activities.",
+        ],
+      ];
+
+      return states
+        .map(([state, info]) =>
+          htmlListItem(
+            htmlBold(state, "table-cell align-top pb-1 pr-1") + htmlWrapper(info, "table-cell pb-1"),
+            "table-row"
+          )
+        )
+        .join("");
+    })(),
   },
   {
     field: "id",
     headerName: "ID",
+    headerTooltip: (() => {
+      return [
+        htmlBold("Unique ID of the node (only first part of the ID is shown)."),
+        htmlSeparator(),
+        htmlItalic("Click the copy button to copy full ID to your clipboard."),
+      ];
+    })(),
     valueFormatter: (params: any) => params.data.idShort,
     cellRenderer: (params: any) => {
       return (
@@ -104,6 +145,14 @@ export const columnDefs = [
   {
     field: "level",
     headerName: "Type",
+    tooltipComponent: HTMLTooltip,
+    headerTooltip: (() => {
+      return [
+        htmlBold("Type and version of the node."),
+        "Type can be either L1 (level 1) or L2 (level 2, not yet available).",
+        "Version is incrementable number that is increased with each software update.",
+      ];
+    })(),
     filter: true,
     sortable: true,
     floatingFilter: true,
@@ -114,6 +163,17 @@ export const columnDefs = [
   {
     field: "ip",
     headerName: "IP & ISP",
+    tooltipComponent: HTMLTooltip,
+    headerTooltip: (() => {
+      return [
+        htmlBold("IP address and ISP of the node."),
+        "IP address is obscured and not available publicly to protect the node from direct access.",
+        htmlSeparator(),
+        htmlItalic(
+          "This data is currently provided by an external service and can be inaccurate - we are working to remedy this situation."
+        ),
+      ];
+    })(),
     filter: true,
     floatingFilter: true,
     valueGetter: (params: any) => {
@@ -144,6 +204,16 @@ export const columnDefs = [
   {
     field: "location",
     headerName: "Location",
+    headerTooltip: (() => {
+      return [
+        htmlBold("Physical location of the node based on the ip address."),
+        "Location plays important role in determining node profitability. Nodes in the same location will share the traffic and therefore the revenue. It is best to set up nodes in locations that have potentially high traffic and limited coverage.",
+        htmlSeparator(),
+        htmlItalic(
+          "This data is currently provided by an external service and can be inaccurate. Please report any mismatch on Github issues - https://github.com/filecoin-saturn/L1-dashboard/issues"
+        ),
+      ];
+    })(),
     filter: true,
     sortable: true,
     floatingFilter: true,
@@ -174,6 +244,15 @@ export const columnDefs = [
   {
     field: "bias",
     headerName: "Weight",
+    headerTooltip: (() => {
+      return [
+        htmlBold("Weigth of the node in the network."),
+        "This value indicates what is the probability of the node being selected to serve the traffic - the higher the value, the higher the probability.",
+        "This value is recalculated on every node registration based on number of factors including TTFB, Speedtest upload rate result, CPU load and number of cores, cache hit ratio, error rate and health check failures.",
+        "For nodes joining the network it can take several days to reach the optimal value based on the nodes performance and network traffic.",
+        "Consistently low weight can indicate a problem with one of the factors mentioned above - you should check whether any of the stats stick out and try to resolve the issue.",
+      ];
+    })(),
     sortable: true,
     filter: "agNumberColumnFilter",
     floatingFilter: true,
@@ -206,7 +285,6 @@ export const columnDefs = [
       );
     },
     tooltipComponent: HTMLTooltip,
-    tooltipComponentParams: { className: "capitalize" },
     tooltipValueGetter: ({ data }: any) => {
       const biases = asStrings(data.biases, (key: string, value: any) => value);
 
@@ -224,6 +302,10 @@ export const columnDefs = [
   {
     field: "diskStats.usedDisk",
     headerName: "Disk Usage",
+    tooltipComponent: HTMLTooltip,
+    headerTooltip: (() => {
+      return [htmlBold("Disk usage reported by the node."), "Disk usage does not impact the node's weight."];
+    })(),
     sortable: true,
     cellRenderer: (params: any) => {
       const diskStats = params.data.diskStats;
@@ -245,6 +327,9 @@ export const columnDefs = [
   {
     field: "memoryUsed",
     headerName: "Memory Usage",
+    headerTooltip: (() => {
+      return [htmlBold("Memory usage reported by the node."), "Memory usage does not impact the node's weight."];
+    })(),
     sortable: true,
     cellRenderer: (params: any) => {
       const memoryStats = params.data.memoryStats;
@@ -263,6 +348,15 @@ export const columnDefs = [
   {
     field: "cpuAvgLoad",
     headerName: "CPU",
+    headerTooltip: (() => {
+      return [
+        htmlBold("CPU usage and load reported by the node."),
+        "[5m avg load] / [cores] ([avg load on all cores %])",
+        "CPU average load (first value) and total number of cores (second value) are included in the node's weight calculation.",
+        "Tooltip: Load values correspond to the avarage load over last 1m, 5m and 15m.",
+      ];
+    })(),
+    tooltipComponent: HTMLTooltip,
     sortable: true,
     cellRenderer: (params: any) => {
       const cpuStats = params.data.cpuStats;
@@ -275,12 +369,20 @@ export const columnDefs = [
       );
     },
     tooltipValueGetter: ({ data }: any) => {
-      return `Loads: ${data.cpuStats.loadAvgs.join(", ")}`;
+      return `Load: ${data.cpuStats.loadAvgs.join(", ")}`;
     },
   },
   {
     field: "ttfbStats.p95_1h",
     headerName: "TTFB",
+    headerTooltip: (() => {
+      return [
+        htmlBold("TTFB (Time To First Byte)"),
+        "This is the time it takes by avarage for the node to respond to a request.",
+        "1h and 24h displayed in this column are the 95th percentile of the response times from last hour and 24 hours respectively. Both of those values are taken into account when calculating the node's weight - the lower the values the better. These numbers are mostly impacted by cache rate and should improve over time when cache fills up. High values can also mean that either node's base latency is high or error rate is high.",
+        "Tooltip: More detailed percentile stats.",
+      ];
+    })(),
     sortable: true,
     cellRenderer: (params: any) => {
       return (
@@ -315,7 +417,6 @@ export const columnDefs = [
       );
     },
     tooltipComponent: HTMLTooltip,
-    tooltipComponentParams: { className: "capitalize" },
     tooltipValueGetter: ({ data }: any) => {
       return asStrings(data.ttfbStats, (key: string) =>
         ["error", "reqs", "hits"].every((exclude) => !key.includes(exclude))
@@ -325,8 +426,16 @@ export const columnDefs = [
   {
     field: "cacheRate1h",
     headerName: "Cache rate",
+    headerTooltip: (() => {
+      return [
+        htmlBold("Cache rate of served requests."),
+        "This is the percentage of requests that were served from cache.",
+        "1h and 24h displayed in this column are cache rates from last hour and 24 hours respectively. Both of those values are taken into account when calculating the node's weight - the higher the values the better.",
+        "These numbers are mostly impacted by the number of unique requests and should improve over time when cache fills up. Consistently low cache rates can indicate that either the node is not caching requests properly (check available disk space in cache directory location) or that the node is serving a lot of unique requests (if that is the case then other nodes in this physical location should have lowered cache rate too).",
+        "Tooltip: Total number of requests in 1h and 24h time spans.",
+      ];
+    })(),
     sortable: true,
-
     cellRenderer: (params: any) => {
       return (
         <>
@@ -360,7 +469,6 @@ export const columnDefs = [
       );
     },
     tooltipComponent: HTMLTooltip,
-    tooltipComponentParams: { className: "capitalize" },
     tooltipValueGetter: ({ data }: any) => {
       return asStrings(data.ttfbStats, (key: any) => ["reqs", "hits"].some((include) => key.includes(include)));
     },
@@ -368,6 +476,15 @@ export const columnDefs = [
   {
     field: "errorRate1h",
     headerName: "Error rate",
+    headerTooltip: (() => {
+      return [
+        htmlBold("Error rate of served requests."),
+        "This is the percentage of requests that were responded with server or gateway error (only 5xx status codes).",
+        "1h and 24h displayed in this column are error rates from last hour and 24 hours respectively. Both of those values are taken into account when calculating the node's weight - the lower the values the better.",
+        "Usually errors are caused by timeouts from ipfs.io gateway on requests to resources that were not cached yet and should improve with cache rate rising over time. Consistently high error rates with high cache rate can indicate network or configuration issues or ipfs.io gateway issues (outages, high load or failing to retrieve content).",
+        "Tooltip: Total number of requests in 1h and 24h time spans.",
+      ];
+    })(),
     sortable: true,
     cellRenderer: (params: any) => {
       return (
@@ -402,7 +519,6 @@ export const columnDefs = [
       );
     },
     tooltipComponent: HTMLTooltip,
-    tooltipComponentParams: { className: "capitalize" },
     tooltipValueGetter: ({ data }: any) => {
       return asStrings(data.ttfbStats, (key: string) => ["reqs", "error"].some((include) => key.includes(include)));
     },
@@ -410,6 +526,15 @@ export const columnDefs = [
   {
     field: "nicStats.bytesSent",
     headerName: "Upload",
+    headerTooltip: (() => {
+      return [
+        htmlBold("Node upload stats and speedtest result."),
+        "Total upload bandwidth is taken from the node's network interface and are updated on every node registration. This value does not impact node's weight and is only used for informational purposes.",
+        "Displayed upload speed is the avergage speed calculated by dividing total upload bandwidth by the number of seconds since the node was initially registered. When this value is very close to or exceeds 10Gbps it will negatively impact node's weight to distribute the load to other nodes.",
+        "Speedtest (available in tooltip) is performed only on initial node startup and the upload rate result is used to calculate the node's weight - the higher the value the better.",
+        "Speedtest may not report maximum upload speed the machine is capable of which is usually fine but in case the value is much lower than expected, you can restart the node to perform speedtest again and if the values are consistently low you can also override the settings to run against specific speedtest server.",
+      ];
+    })(),
     sortable: true,
     cellRenderer: (params: any) => {
       const percent = params.data.uploadRate / params.data.maxSpeed;
@@ -444,6 +569,15 @@ export const columnDefs = [
   {
     field: "nicStats.bytesReceived",
     headerName: "Download",
+    headerTooltip: (() => {
+      return [
+        htmlBold("Node download stats and speedtest result."),
+        "Total download bandwidth is taken from the node's network interface and is updated on every node registration.",
+        "Speedtest (available in tooltip) is performed only on initial node startup.",
+        "None of these values are not used in node's weight calculation and are only used for informational purposes.",
+      ];
+    })(),
+    tooltipComponent: HTMLTooltip,
     sortable: true,
     filter: "agNumberColumnFilter",
     cellRenderer: ({ data }: any) => {
@@ -456,6 +590,14 @@ export const columnDefs = [
   {
     field: "lastRegistration",
     headerName: "Last Registration",
+    headerTooltip: (() => {
+      return [
+        htmlBold("Time of last successful node registration."),
+        "Every node periodically reports its status to the network to make sure its operational.",
+        "Nodes that did not report for a long time are pruned from the network.",
+      ];
+    })(),
+    tooltipComponent: HTMLTooltip,
     sortable: true,
     cellRenderer: (params: any) => {
       return (
@@ -473,6 +615,10 @@ export const columnDefs = [
   {
     field: "createdAt",
     headerName: "Created",
+    headerTooltip: (() => {
+      return htmlBold("Time of initial node registration.");
+    })(),
+    tooltipComponent: HTMLTooltip,
     sortable: true,
     cellRenderer: (params: any) => {
       return (
@@ -486,6 +632,10 @@ export const columnDefs = [
   {
     field: "operator",
     headerName: "Operator",
+    headerTooltip: (() => {
+      return htmlBold("Node operator email and $fil wallet address.");
+    })(),
+    tooltipComponent: HTMLTooltip,
     filter: true,
     floatingFilter: true,
     hide: true,
