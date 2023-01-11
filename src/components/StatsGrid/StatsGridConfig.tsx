@@ -210,7 +210,7 @@ export const columnDefs = [
         "Location plays important role in determining node profitability. Nodes in the same location will share the traffic and therefore the revenue. It is best to set up nodes in locations that have potentially high traffic and limited coverage.",
         htmlSeparator(),
         htmlItalic(
-          "This data is currently provided by an external service and can be inaccurate - we are working to remedy this situation."
+          "This data is currently provided by an external service and can be inaccurate. Please report any mismatch on Github issues - https://github.com/filecoin-saturn/L1-dashboard/issues"
         ),
       ];
     })(),
