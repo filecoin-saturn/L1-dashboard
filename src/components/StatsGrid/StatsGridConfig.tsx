@@ -125,11 +125,14 @@ export const columnDefs = [
     cellRenderer: (params: any) => {
       return (
         <>
-          {params.context.state.authorizationToken ? (
+          {params.data.ipAddress ? (
             <div className="overflow-clip text-ellipsis">
-              <button type="button" onClick={() => copy(params.data.ipAddress)}>
-                <CopyIcon className="cursor-pointer text-slate-600 hover:text-slate-500" />
-              </button>{" "}
+              {/* include copy button only when authenticated - doesn't make sense for obscured ip */}
+              {params.context.state.authorizationToken ? (
+                <button type="button" onClick={() => copy(params.data.ipAddress)} className="mr-1">
+                  <CopyIcon className="cursor-pointer text-slate-600 hover:text-slate-500" />
+                </button>
+              ) : null}
               {params.data.ipAddress}
             </div>
           ) : null}
