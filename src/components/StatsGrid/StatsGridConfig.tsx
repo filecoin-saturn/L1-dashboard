@@ -115,6 +115,12 @@ export const columnDefs = [
         htmlItalic("Click the copy button to copy full ID to your clipboard."),
       ];
     })(),
+    valueGetter: (params: any) => {
+      let value = params.data.id;
+      if (params.data.sunrise) value = `${value} sunrise 🌅️`;
+      if (params.data.core) value = `${value} core ⭐️`;
+      return value;
+    },
     valueFormatter: (params: any) => params.data.idShort,
     cellRenderer: (params: any) => {
       return (
