@@ -22,6 +22,16 @@ function createChartProps(period: TimePeriod) {
   let labelUnit: DurationUnitType;
 
   switch (period) {
+    case TimePeriod.ONE_YEAR:
+      dateRange = pastDateRange("day", 365);
+      step = "day";
+      labelUnit = "day";
+      break;
+    case TimePeriod.THREE_MONTHS:
+      dateRange = pastDateRange("day", 90);
+      step = "day";
+      labelUnit = "day";
+      break;
     case TimePeriod.MONTH:
       dateRange = pastDateRange("day", 30);
       step = "day";
