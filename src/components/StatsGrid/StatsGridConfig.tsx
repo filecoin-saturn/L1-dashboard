@@ -206,9 +206,6 @@ export const columnDefs = [
         </>
       );
     },
-    tooltipValueGetter: ({ data }: any) => {
-      return `Org: ${data.geoloc.org ?? "Unknown"}`;
-    },
   },
   {
     field: "location",

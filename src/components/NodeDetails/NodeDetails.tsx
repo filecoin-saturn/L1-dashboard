@@ -34,7 +34,7 @@ function NodeDetails({ node }: any) {
         </div>
         <div className="sm:col-span-1">
           <dt className="text-sm text-slate-400">Location & ISP</dt>
-          <dd className="mt-1 text-sm">ISP: {node.geoloc.org}</dd>
+          <dd className="mt-1 text-sm">ISP: {node.ispShort}</dd>
           <dd className="mt-1 text-sm">
             {node.geoloc.country}, {node.geoloc.region}, {node.geoloc.city}
           </dd>
