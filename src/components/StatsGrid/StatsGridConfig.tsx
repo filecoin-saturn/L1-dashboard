@@ -455,7 +455,7 @@ export const columnDefs = [
                 "text-yellow-500": params.data.cacheRate1h >= 0.9 && params.data.cacheRate1h < 0.95,
               })}
             >
-              {params.data.cacheRate1h > 0 ? asPercent(params.data.cacheRate1h) : "n/a"}
+              {params.data.cacheRate1h === null ? "n/a" : asPercent(params.data.cacheRate1h)}
             </span>
           </div>
           <div className="overflow-clip text-ellipsis">
@@ -468,7 +468,7 @@ export const columnDefs = [
                 "text-yellow-500": params.data.cacheRate24h >= 0.9 && params.data.cacheRate24h < 0.95,
               })}
             >
-              {params.data.cacheRate24h > 0 ? asPercent(params.data.cacheRate24h) : "n/a"}
+              {params.data.cacheRate24h === null ? "n/a" : asPercent(params.data.cacheRate24h)}
             </span>
           </div>
         </>
@@ -505,7 +505,7 @@ export const columnDefs = [
                 "text-yellow-500": params.data.errorRate1h >= 0.01 && params.data.errorRate1h < 0.1,
               })}
             >
-              {params.data.errorRate1h > 0 ? asPercent(params.data.errorRate1h) : "n/a"}
+              {params.data.errorRate1h === null ? "n/a" : asPercent(params.data.errorRate1h)}
             </span>
           </div>
           <div className="overflow-clip text-ellipsis">
@@ -518,7 +518,7 @@ export const columnDefs = [
                 "text-yellow-500": params.data.errorRate24h >= 0.01 && params.data.errorRate24h < 0.1,
               })}
             >
-              {params.data.errorRate24h > 0 ? asPercent(params.data.errorRate24h) : "n/a"}
+              {params.data.errorRate24h === null ? "n/a" : asPercent(params.data.errorRate24h)}
             </span>
           </div>
         </>
