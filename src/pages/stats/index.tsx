@@ -36,8 +36,9 @@ export default function Stats() {
 
   if (error) {
     return (
-      <div className="flex h-full w-full items-center justify-center">
-        Failed to load stats, please try again later.
+      <div className="flex h-full w-full flex-col items-center justify-center space-y-2">
+        <p>Failed to load stats, please try again later.</p>
+        <p className="text-sm text-slate-500">[error] {error.message}</p>
       </div>
     );
   }
