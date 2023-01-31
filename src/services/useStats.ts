@@ -7,7 +7,7 @@ const middleware = (data: { admin: boolean; nodes: any[] }) => {
   data.nodes.forEach((node) => {
     node.idShort = node.id.split("-")[0]; // short id (first section of guid)
     node.versionShort = node.version.split("_")[0]; // short version (just first vXXX section)
-    node.ispShort = (node.speedtest.isp ?? "Unknown ISP").split(" ").slice(0, 2).join(" ");
+    node.ispShort = (node.speedtest?.isp ?? "Unknown ISP").split(" ").slice(0, 2).join(" ");
     if (node.ttfbStats.reqs_served_1h) {
       node.cacheRate1h = node.ttfbStats.hits_1h / node.ttfbStats.reqs_served_1h;
       node.errorRate1h = node.ttfbStats.errors_1h / node.ttfbStats.reqs_served_1h;
