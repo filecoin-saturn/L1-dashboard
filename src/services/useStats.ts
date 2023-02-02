@@ -53,7 +53,7 @@ export default function useStats(config?: SWRConfiguration) {
     revalidateOnMount: state.statsAutoRefresh,
     revalidateOnFocus: state.statsAutoRefresh,
     revalidateOnReconnect: state.statsAutoRefresh,
-    refreshInterval: state.statsAutoRefresh ? 10000 : 0, // refresh every 10 seconds when enabled
+    refreshInterval: state.statsAutoRefresh ? 30000 : 0, // refresh every 30 seconds when enabled
     ...config,
   });
 }
