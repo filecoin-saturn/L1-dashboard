@@ -129,7 +129,7 @@ export const columnDefs = [
             <CopyIcon className="cursor-pointer text-slate-600 hover:text-slate-500" />
           </button>{" "}
           {params.valueFormatted} {params.data.sunrise ? <span>🌅️</span> : null}
-          {params.context.state.authorizationToken && params.data.core ? <span>⭐️</span> : null}
+          {params.data.core ? <span>⭐️</span> : null}
         </>
       );
     },
@@ -142,7 +142,7 @@ export const columnDefs = [
       if (params.data.sunrise) {
         tooltip.push("🌅️ Sunrise node");
       }
-      if (params.context.state.authorizationToken && params.data.core) {
+      if (params.data.core) {
         tooltip.push("⭐️ Core node");
       }
       return tooltip;
