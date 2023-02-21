@@ -385,7 +385,10 @@ export const columnDefs = [
       return [
         htmlBold("TTFB (Time To First Byte)"),
         "This is the time it takes by avarage for the node to respond to a request.",
-        "1h and 24h displayed in this column are the 95th percentile of the response times from last hour and 24 hours respectively. Both of those values are taken into account when calculating the node's weight - the lower the values the better. These numbers are mostly impacted by cache rate and should improve over time when cache fills up. High values can also mean that either node's base latency is high or error rate is high.",
+        "1h and 24h displayed in this column are the 95th percentile of the response times from last hour and 24 hours respectively. " +
+        "Both of those values are taken into account when calculating the node's weight - the lower the values the better. " +
+        "These numbers are mostly impacted by cache hit rates and should improve over time when cache fills up. " +
+        "High values can also mean that either node's base latency is high or error rate is high.",
         "Tooltip: More detailed percentile stats.",
       ];
     })(),
@@ -431,13 +434,16 @@ export const columnDefs = [
   },
   {
     field: "cacheRate1h",
-    headerName: "Cache rate",
+    headerName: "Cache hit rate",
     headerTooltip: (() => {
       return [
-        htmlBold("Cache rate of served requests."),
+        htmlBold("Cache hit rate of served requests."),
         "This is the percentage of requests that were served from cache.",
-        "1h and 24h displayed in this column are cache rates from last hour and 24 hours respectively. Both of those values are taken into account when calculating the node's weight - the higher the values the better.",
-        "These numbers are mostly impacted by the number of unique requests and should improve over time when cache fills up. Consistently low cache rates can indicate that either the node is not caching requests properly (check available disk space in cache directory location) or that the node is serving a lot of unique requests (if that is the case then other nodes in this physical location should have lowered cache rate too).",
+        "1h and 24h displayed in this column are cache hit rates from the last hour and 24 hours respectively. " +
+        "Both of those values are taken into account when calculating the node's weight - the higher the values the better.",
+        "These numbers are mostly impacted by the number of unique requests and should improve over time when cache fills up. " +
+        "Consistently low cache hit rates can indicate that either the node is not caching requests properly (check available disk space in cache directory location) " +
+        "or that the node is serving a lot of unique requests (if that is the case then other nodes in this physical location should have lowered cache hit rates too).",
         "Tooltip: Total number of requests in 1h and 24h time spans.",
       ];
     })(),
@@ -486,8 +492,10 @@ export const columnDefs = [
       return [
         htmlBold("Error rate of served requests."),
         "This is the percentage of requests that were responded with server or gateway error (only 5xx status codes).",
-        "1h and 24h displayed in this column are error rates from last hour and 24 hours respectively. Both of those values are taken into account when calculating the node's weight - the lower the values the better.",
-        "Usually errors are caused by timeouts from ipfs.io gateway on requests to resources that were not cached yet and should improve with cache rate rising over time. Consistently high error rates with high cache rate can indicate network or configuration issues or ipfs.io gateway issues (outages, high load or failing to retrieve content).",
+        "1h and 24h displayed in this column are error rates from last hour and 24 hours respectively. " +
+        "Both of those values are taken into account when calculating the node's weight - the lower the values the better.",
+        "Usually errors are caused by timeouts from ipfs.io gateway on requests to resources that were not cached yet and should improve with cache hit rates rising over time. " +
+        "Consistently high error rates with high cache hit rates can indicate network or configuration issues or ipfs.io gateway issues (outages, high load or failing to retrieve content).",
         "Tooltip: Total number of requests in 1h and 24h time spans.",
       ];
     })(),
