@@ -22,7 +22,7 @@ export default function StatsGrid() {
 
   const autoSizeAllColumns = useCallback(() => {
     if (columnApi) {
-      columnApi.autoSizeAllColumns();
+      setTimeout(() => columnApi.autoSizeAllColumns(), 0);
     }
   }, [columnApi]);
 
