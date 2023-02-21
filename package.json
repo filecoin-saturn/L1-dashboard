@@ -1,7 +1,7 @@
 {
   "name": "saturn-webui",
   "private": true,
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "A frontend UI for the Saturn L2 node.",
   "scripts": {
     "dev": "vite",
