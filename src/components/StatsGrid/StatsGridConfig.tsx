@@ -326,7 +326,7 @@ export const columnDefs = [
       return (
         <>
           <div className="overflow-clip text-ellipsis">
-            {diskStats.usedDiskMB / 1e3} GB ({asPercent(usedDiskPercent)})
+            {(diskStats.usedDiskMB / 1e3).toFixed()} GB ({asPercent(usedDiskPercent)})
           </div>
           <div className="overflow-clip text-ellipsis">of {bytes(diskStats.totalDiskMB * 1e6)}</div>
         </>
