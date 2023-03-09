@@ -321,19 +321,19 @@ export const columnDefs = [
     sortable: true,
     cellRenderer: (params: any) => {
       const diskStats = params.data.diskStats;
-      const usedDiskPercent = 1 - diskStats.availableDisk / diskStats.totalDisk;
+      const usedDiskPercent = 1 - diskStats.availableDiskMB / diskStats.totalDiskMB;
 
       return (
         <>
           <div className="overflow-clip text-ellipsis">
-            {diskStats.usedDisk} GB ({asPercent(usedDiskPercent)})
+            {diskStats.usedDiskMB / 1e3} GB ({asPercent(usedDiskPercent)})
           </div>
-          <div className="overflow-clip text-ellipsis">of {bytes(diskStats.totalDisk * 1024 * 1024 * 1024)}</div>
+          <div className="overflow-clip text-ellipsis">of {bytes(diskStats.totalDiskMB * 1e6)}</div>
         </>
       );
     },
     tooltipValueGetter: ({ data }: any) => {
-      return `Available: ${bytes(data.diskStats.availableDisk * 1000000000)}`;
+      return `Available: ${bytes(data.diskStats.availableDiskMB * 1e6)}`;
     },
   },
   {
@@ -345,16 +345,19 @@ export const columnDefs = [
     sortable: true,
     cellRenderer: (params: any) => {
       const memoryStats = params.data.memoryStats;
-      const usedMemory = memoryStats.totalMemory - memoryStats.availableMemory; // Is this right?
-      const usedMemoryPercent = usedMemory / memoryStats.totalMemory;
+      const usedMemory = memoryStats.totalMemoryKB - memoryStats.availableMemoryKB; // Is this right?
+      const usedMemoryPercent = usedMemory / memoryStats.totalMemoryKB;
 
-      return `${usedMemory.toLocaleString()} / ${memoryStats.totalMemory.toFixed(0)} GB (${asPercent(
+      return `${(usedMemory / 1e6).toLocaleString()} / ${(memoryStats.totalMemoryKB / 1e6).toFixed(0)} GB (${asPercent(
         usedMemoryPercent
       )})`;
     },
     tooltipComponent: HTMLTooltip,
     tooltipValueGetter: ({ data }: any) => {
-      return [`Available: ${data.memoryStats.availableMemory} GB`, `Free: ${data.memoryStats.freeMemory} GB`];
+      return [
+        `Available: ${data.memoryStats.availableMemoryKB / 1e6} GB`,
+        `Free: ${data.memoryStats.freeMemoryKB / 1e6} GB`,
+      ];
     },
   },
   {
