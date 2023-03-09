@@ -348,15 +348,17 @@ export const columnDefs = [
       const usedMemory = memoryStats.totalMemoryKB - memoryStats.availableMemoryKB; // Is this right?
       const usedMemoryPercent = usedMemory / memoryStats.totalMemoryKB;
 
-      return `${(usedMemory / 1e6).toLocaleString()} / ${(memoryStats.totalMemoryKB / 1e6).toFixed(0)} GB (${asPercent(
-        usedMemoryPercent
-      )})`;
+      return `${(usedMemory / 1024 / 1024).toFixed()} / ${(
+        memoryStats.totalMemoryKB /
+        1024 /
+        1024
+      ).toFixed()} GB (${asPercent(usedMemoryPercent)})`;
     },
     tooltipComponent: HTMLTooltip,
     tooltipValueGetter: ({ data }: any) => {
       return [
-        `Available: ${data.memoryStats.availableMemoryKB / 1e6} GB`,
-        `Free: ${data.memoryStats.freeMemoryKB / 1e6} GB`,
+        `Available: ${(data.memoryStats.availableMemoryKB / 1024 / 1024).toFixed()} GB`,
+        `Free: ${(data.memoryStats.freeMemoryKB / 1024 / 1024).toFixed()} GB`,
       ];
     },
   },

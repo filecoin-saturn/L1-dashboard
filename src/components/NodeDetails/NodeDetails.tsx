@@ -22,15 +22,15 @@ function NodeDetails({ node }: any) {
         </div>
         <div className="sm:col-span-1">
           <dt className="text-sm text-slate-400">Disk stats</dt>
-          <dd className="mt-1 text-sm">Available: {bytes(node.diskStats.availableDisk * 1024 * 1024 * 1024)}</dd>
-          <dd className="mt-1 text-sm">Total: {bytes(node.diskStats.totalDisk * 1024 * 1024 * 1024)}</dd>
-          <dd className="mt-1 text-sm">Used: {bytes(node.diskStats.usedDisk * 1024 * 1024 * 1024)}</dd>
+          <dd className="mt-1 text-sm">Available: {bytes(node.diskStats.availableDiskMB * 1e6)}</dd>
+          <dd className="mt-1 text-sm">Total: {bytes(node.diskStats.totalDiskMB * 1e6)}</dd>
+          <dd className="mt-1 text-sm">Used: {bytes(node.diskStats.usedDiskMB * 1e6)}</dd>
         </div>
         <div className="sm:col-span-1">
           <dt className="text-sm text-slate-400">Memory stats</dt>
-          <dd className="mt-1 text-sm">Available: {bytes(node.memoryStats.availableMemory * 1024 * 1024 * 1024)}</dd>
-          <dd className="mt-1 text-sm">Total: {bytes(node.memoryStats.totalMemory * 1024 * 1024 * 1024)}</dd>
-          <dd className="mt-1 text-sm">Free: {bytes(node.memoryStats.freeMemory * 1024 * 1024 * 1024)}</dd>
+          <dd className="mt-1 text-sm">Available: {bytes(node.memoryStats.availableMemoryKB * 1024)}</dd>
+          <dd className="mt-1 text-sm">Total: {bytes(node.memoryStats.totalMemoryKB * 1024)}</dd>
+          <dd className="mt-1 text-sm">Free: {bytes(node.memoryStats.freeMemoryKB * 1024)}</dd>
         </div>
         <div className="sm:col-span-1">
           <dt className="text-sm text-slate-400">Location & ISP</dt>
