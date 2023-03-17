@@ -14,10 +14,29 @@ export interface Earning {
   filAmount: number;
 }
 
+export interface GlobalStats {
+  totalEarnings: number;
+  totalRetrievals: number;
+  totalBandwidth: number;
+}
+
 export interface MetricsResponse {
-  nodes: Node[];
   metrics: Metric[];
   earnings: Earning[];
+  data?: any;
+}
+
+export interface FetchAllResponse extends MetricsResponse {
+  globalStats: GlobalStats;
+  perNodeMetrics: Array<object>;
+  nodes: Node[];
+}
+export interface GlobalMetrics {
+  totalEarnings: number;
+  totalRetrievals: number;
+  totalBandwidth: number;
+  perNodeMetrics: Array<object>;
+  nodes: Node[];
 }
 
 export interface RequestInit extends globalThis.RequestInit {
