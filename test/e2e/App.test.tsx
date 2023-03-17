@@ -4,7 +4,7 @@ import type { PreviewServer } from "vite";
 import puppeteer from "puppeteer";
 import type { Browser, Page } from "puppeteer";
 
-const TEST_FILE_ADDRESS = "f16m5slrkc6zumruuhdzn557a5sdkbkiellron4qa";
+const TEST_FIL_ADDRESS = "f16m5slrkc6zumruuhdzn557a5sdkbkiellron4qa";
 
 describe("website mode", async () => {
   let server: PreviewServer;
@@ -25,7 +25,7 @@ describe("website mode", async () => {
   });
 
   test("navbar should be visible", async () => {
-    await page.goto(`${server.resolvedUrls.local[0]}/address/${TEST_FILE_ADDRESS}`);
+    await page.goto(`${server.resolvedUrls.local[0]}/address/${TEST_FIL_ADDRESS}`);
     const navbar = (await page.$("[data-test-id=navbar]"))!;
     expect(navbar).not.toBe(null);
   }, 60_000);
