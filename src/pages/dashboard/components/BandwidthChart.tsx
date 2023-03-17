@@ -9,13 +9,17 @@ interface BandwidthChartProps extends ChartProps {
 }
 
 export default function BandwidthChart(props: BandwidthChartProps) {
-  const { xScale, metrics, isLoading, spanGaps } = props;
+  const { xScale, metrics, isLoading, node, spanGaps } = props;
 
+  let title = "Global Bandwidth Served";
+  if (node) {
+    title = `Bandwidth Served for ${node}`;
+  }
   const options: ChartOptions<"line"> = {
     plugins: {
       title: {
         display: true,
-        text: "Bandwidth Served",
+        text: title,
       },
       tooltip: {
         callbacks: {

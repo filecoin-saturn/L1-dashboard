@@ -4,14 +4,15 @@ import type { DurationUnitType } from "dayjs/plugin/duration";
 import { Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import * as api from "../../api";
-import { MetricsResponse, TimePeriod } from "../../api.types";
+import { GlobalMetrics, MetricsResponse, TimePeriod } from "../../api.types";
 import { pastDateRange } from "../../date-utils";
 import BandwidthChart from "./components/BandwidthChart";
 import EarningsChart from "./components/EarningsChart";
+import NodesTable from "./components/NodesTable";
 import RequestsChart from "./components/RequestsChart";
 
 interface OverviewProps {
-  metricsRes: MetricsResponse;
+  globalMetrics: GlobalMetrics;
   address: string;
   children?: ReactNode;
 }
@@ -90,18 +91,16 @@ function SelectTimePeriod(props: { period: TimePeriod; setPeriod: Dispatch<SetSt
 }
 
 function Overview(props: OverviewProps) {
-  const { earnings, nodes, metrics } = props.metricsRes;
+  // const { earnings, nodes, metrics } = props.metricsRes;
+  const { totalEarnings, totalBandwidth, totalRetrievals, nodes } = props.globalMetrics;
 
   // Might be worth using useMemo here if data sets become large.
-  const totalEarnings = earnings.reduce((memo, earning) => memo + earning.filAmount, 0);
-  const totalBandwidth = metrics.reduce((memo, metric) => memo + metric.numBytes, 0);
-  const totalRetrievals = metrics.reduce((memo, metric) => memo + metric.numRequests, 0);
   const numActiveNodes = nodes.find((d) => d.state === "active")?.count ?? 0;
   const numInactiveNodes = nodes.find((d) => d.state === "inactive")?.count ?? 0;
   const numDownNodes = nodes.find((d) => d.state === "down")?.count ?? 0;
 
   return (
-    <div className="flex h-[300px] w-[100%] max-w-[600px] flex-col rounded">
+    <div className="flex h-[350px] w-[100%] max-w-[600px] flex-col rounded">
       <div className="flex items-center justify-between bg-[#0066B4] py-2 px-4 text-lg">
         Overview
         {props.children}
@@ -132,9 +131,21 @@ function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<null | string>(null);
 
+  const [selectedNode, setSelectedNode] = useState<null | string>(null);
+
   const defaultPeriod = (searchParams.get("period") as TimePeriod) ?? TimePeriod.WEEK;
   const [period, setPeriod] = useState<TimePeriod>(defaultPeriod);
-  const [metricsRes, setMetricsRes] = useState<MetricsResponse>({ earnings: [], nodes: [], metrics: [] });
+  const [globalMetrics, setGlobalMetrics] = useState<GlobalMetrics>({
+    totalEarnings: 0,
+    totalRetrievals: 0,
+    totalBandwidth: 0,
+    perNodeMetrics: [],
+    nodes: [],
+  });
+  const [metricsRes, setMetricsRes] = useState<MetricsResponse>({
+    earnings: [],
+    metrics: [],
+  });
 
   const chartProps = createChartProps(period);
 
@@ -143,6 +154,37 @@ function Dashboard() {
   const [chartPropsFinal, setChartPropsFinal] = useState(chartProps);
   chartPropsFinal.isLoading = isLoading;
 
+  const fetchData = async (controller: AbortController) => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const { startDate, endDate } = chartProps.dateRange;
+
+      let metricsRes;
+      if (selectedNode) {
+        metricsRes = await api.fetchNodeMetrics(selectedNode, startDate, endDate, chartProps.step, controller.signal);
+      } else {
+        metricsRes = await api.fetchMetrics(address, startDate, endDate, chartProps.step, controller.signal);
+        const { globalStats, nodes, perNodeMetrics } = metricsRes;
+        setGlobalMetrics({ ...globalStats, nodes, perNodeMetrics });
+      }
+
+      const { earnings, metrics } = metricsRes;
+      setMetricsRes({ earnings, metrics });
+
+      setChartPropsFinal(chartProps);
+    } catch (err) {
+      if (err instanceof Error && !controller.signal.aborted) {
+        setError(err?.message ?? "Error retrieving metrics.");
+      }
+    } finally {
+      if (!controller.signal.aborted) {
+        setIsLoading(false);
+      }
+    }
+  };
+
   useEffect(() => {
     if (!address) {
       return;
@@ -150,47 +192,26 @@ function Dashboard() {
 
     searchParams.set("period", period);
     setSearchParams(searchParams);
-
     const controller = new AbortController();
-
-    const fetchData = async () => {
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        const { startDate, endDate } = chartProps.dateRange;
-
-        const metricsRes = await api.fetchMetrics(address, startDate, endDate, chartProps.step, controller.signal);
-        setMetricsRes(metricsRes);
-        setChartPropsFinal(chartProps);
-      } catch (err) {
-        if (err instanceof Error && !controller.signal.aborted) {
-          setError(err?.message ?? "Error retrieving metrics.");
-        }
-      } finally {
-        if (!controller.signal.aborted) {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    fetchData();
+    fetchData(controller);
 
     return () => controller.abort();
-  }, [address, period]);
+  }, [address, period, selectedNode]);
 
-  const { earnings, metrics } = metricsRes;
+  const { perNodeMetrics } = globalMetrics;
+  const { metrics, earnings } = metricsRes;
 
   return (
     <div className="mx-auto mt-8 flex max-w-7xl flex-1 flex-col gap-4">
       {error && <p className="text-center text-lg text-red-600">Error: {error}</p>}
       <div className="flex flex-wrap justify-center gap-12">
-        <Overview {...{ metricsRes, address }}>
+        <Overview {...{ globalMetrics, address }}>
           <SelectTimePeriod period={period} setPeriod={setPeriod} />
         </Overview>
-        <EarningsChart earnings={earnings} {...chartPropsFinal} />
-        <RequestsChart metrics={metrics} {...chartPropsFinal} />
-        <BandwidthChart metrics={metrics} {...chartPropsFinal} />
+        <NodesTable metrics={perNodeMetrics} setSelectedNode={setSelectedNode} />
+        <EarningsChart earnings={earnings} node={selectedNode} {...chartPropsFinal} />
+        <RequestsChart metrics={metrics} node={selectedNode} {...chartPropsFinal} />
+        <BandwidthChart metrics={metrics} node={selectedNode} {...chartPropsFinal} />
       </div>
     </div>
   );

@@ -8,12 +8,17 @@ interface RequestsChartProps extends ChartProps {
 }
 
 export default function RequestsChart(props: RequestsChartProps) {
-  const { metrics, xScale, isLoading, spanGaps } = props;
+  const { metrics, xScale, node, isLoading, spanGaps } = props;
+
+  let title = "Global Retrievals";
+  if (node) {
+    title = `Retrievals for ${node}`;
+  }
   const options: ChartOptions<"line"> = {
     plugins: {
       title: {
         display: true,
-        text: "Number of Retrievals",
+        text: title,
       },
     },
     scales: {

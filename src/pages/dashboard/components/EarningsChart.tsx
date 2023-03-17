@@ -9,12 +9,16 @@ interface EarningsChartProps extends ChartProps {
 
 // Chart config must take into account that earnings are calculated once per day
 export default function EarningsChart(props: EarningsChartProps) {
-  const { earnings, xScale, isLoading } = props;
+  const { earnings, xScale, node, isLoading } = props;
+  let title = "Global Earnings";
+  if (node) {
+    title = `Earnings for ${node}`;
+  }
   const options: ChartOptions<"line"> = {
     plugins: {
       title: {
         display: true,
-        text: "Earnings",
+        text: title,
       },
       tooltip: {
         callbacks: {

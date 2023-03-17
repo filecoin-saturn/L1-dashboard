@@ -9,6 +9,7 @@ export interface ChartProps {
   };
   xScale: object;
   spanGaps: number;
+  node: string | null;
 }
 
 export interface ChartContainerProps {
@@ -19,7 +20,7 @@ export interface ChartContainerProps {
 export default function ChartContainer(props: ChartContainerProps) {
   return (
     <div
-      className={`relative h-[300px] w-[100%] max-w-[600px] rounded bg-slate-900
+      className={`relative h-[350px] w-[100%] max-w-[600px] rounded bg-slate-900
             p-4 pt-2`}
     >
       {props.isLoading && <Loader className="absolute right-2 top-2" />}
