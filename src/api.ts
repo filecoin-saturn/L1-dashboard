@@ -9,7 +9,7 @@ const METRICS_ORIGIN = import.meta.env.DEV
 
 // The current setup for local testing uses a Lambda gateway that
 // does not parse the requests to lambda events.
-const IS_LOCAL_LAMBDA = import.meta.env.LOCAL_GATEWAY;
+const IS_LOCAL_LAMBDA = import.meta.env.VITE_LOCAL_GATEWAY;
 /**
  * Fetch API wrapper that throws on 400+ http status.
  */
@@ -71,6 +71,9 @@ export async function fetchMetrics(
 
   const res: FetchAllResponse = await wfetch(url, { signal }, dataObj).then((r) => r.json());
 
+  // Uncomment for local testing
+  // res = res.data?.body;
+
   res.earnings.forEach((e) => {
     e.timestamp = new Date(e.timestamp);
   });
@@ -108,6 +111,9 @@ export async function fetchNodeMetrics(
   url.searchParams.set("step", step);
 
   const res: MetricsResponse = await wfetch(url, { signal }, dataObj).then((r) => r.json());
+
+  // Uncomment for local testing
+  // res = res.data?.body;
 
   res.earnings.forEach((e) => {
     e.timestamp = new Date(e.timestamp);
