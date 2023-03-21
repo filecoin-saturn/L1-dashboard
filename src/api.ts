@@ -7,9 +7,6 @@ const METRICS_ORIGIN = import.meta.env.DEV
   ? window.location.origin + "/metrics"
   : import.meta.env.VITE_METRICS_ORIGIN ?? "https://ln3tnkd4d5uiufjgimi6jlkmci0bceff.lambda-url.us-west-2.on.aws/";
 
-// The current setup for local testing uses a Lambda gateway that
-// does not parse the requests to lambda events.
-const IS_LOCAL_LAMBDA = import.meta.env.VITE_LOCAL_GATEWAY;
 /**
  * Fetch API wrapper that throws on 400+ http status.
  */
@@ -18,15 +15,6 @@ export async function wfetch(resource: RequestInfo | URL, opts: RequestInit = {}
     const controller = new AbortController();
     opts.signal = controller.signal;
     setTimeout(() => controller.abort(), opts.timeout);
-  }
-
-  if (IS_LOCAL_LAMBDA) {
-    opts.headers = {
-      "Content-Type": "application/json",
-    };
-
-    opts.body = JSON.stringify(dataObj);
-    opts.method = "POST";
   }
 
   const response = await fetch(resource, opts);
@@ -71,9 +59,6 @@ export async function fetchMetrics(
 
   const res: FetchAllResponse = await wfetch(url, { signal }, dataObj).then((r) => r.json());
 
-  // Uncomment for local testing
-  // res = res.data?.body;
-
   res.earnings.forEach((e) => {
     e.timestamp = new Date(e.timestamp);
   });
@@ -111,9 +96,6 @@ export async function fetchNodeMetrics(
   url.searchParams.set("step", step);
 
   const res: MetricsResponse = await wfetch(url, { signal }, dataObj).then((r) => r.json());
-
-  // Uncomment for local testing
-  // res = res.data?.body;
 
   res.earnings.forEach((e) => {
     e.timestamp = new Date(e.timestamp);
