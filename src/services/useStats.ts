@@ -21,7 +21,7 @@ const middleware = (data: { admin: boolean; nodes: any[] }) => {
       node.cacheRate24h = node.errorRate24h = node.ttfbStats.reqs_served_24h === 0 ? 0 : null;
     }
     node.HealthCheckFailures = node.HealthCheckFailures ?? []; // ensure that this property is defined
-    node.memoryUsed = node.memoryStats.totalMemory - node.memoryStats.availableMemory;
+    node.memoryUsed = node.memoryStats.totalMemoryKB - node.memoryStats.availableMemoryKB;
     node.cpuAvgLoad = node.cpuStats.loadAvgs[1];
 
     // sort health check failures by creation date (most recent first)
