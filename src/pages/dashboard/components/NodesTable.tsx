@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import ChartContainer from "./ChartContainer";
 import HTMLTooltip from "../../../components/StatsGrid/HTMLTooltip";
 
-import { CopyIcon, ProjectRoadmapIcon, SyncIcon } from "@primer/octicons-react";
+import { CopyIcon, ProjectRoadmapIcon, ListUnorderedIcon } from "@primer/octicons-react";
 import copy from "copy-text-to-clipboard";
 import classNames from "classnames";
 import GridButton from "../../../components/StatsGrid/GridButton";
@@ -81,7 +81,7 @@ export default function NodesTable(props: any) {
     <ChartContainer isLoading={false}>
       <div>
         <GridButton onClick={() => setSelectedNode(null)} className="m-2 min-w-[155px]">
-          <SyncIcon className="-ml-0.5 mr-2 h-4 w-4" aria-hidden="true" /> Reset Charts to Include All Nodes
+          <ListUnorderedIcon className="-ml-0.5 mr-2 h-4 w-4" aria-hidden="true" /> Reset Charts to Include All Nodes
         </GridButton>
       </div>
       <div className="ag-theme-balham-dark ag-theme-saturn h-full max-h-72 w-auto max-w-[600px]">
