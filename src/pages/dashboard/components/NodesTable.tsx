@@ -81,7 +81,7 @@ export default function NodesTable(props: any) {
     <ChartContainer isLoading={false}>
       <div>
         <GridButton onClick={() => setSelectedNode(null)} className="m-2 min-w-[155px]">
-          <SyncIcon className="-ml-0.5 mr-2 h-4 w-4" aria-hidden="true" /> Reset Charts to Global
+          <SyncIcon className="-ml-0.5 mr-2 h-4 w-4" aria-hidden="true" /> Reset Charts to Include All Nodes
         </GridButton>
       </div>
       <div className="ag-theme-balham-dark ag-theme-saturn h-full max-h-72 w-auto max-w-[600px]">
