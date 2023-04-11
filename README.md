@@ -6,7 +6,7 @@
 
 A dashboard UI for Filecoin Saturn's [L1](https://github.com/filecoin-saturn/L1-node) node.
 
-Hosted at [https://dashboard.strn.network](https://dashboard.strn.network)
+Hosted at [https://dashboard.saturn.tech](https://dashboard.saturn.tech)
 
 ## Install
 
@@ -54,7 +54,7 @@ This repository is connected to [fleek.co](https://app.fleek.co/) and set up to:
 
 - deploy production build automatically to IPFS on every update to `main` branch
   - available via [dashboard-strn.on.fleek.co](https://dashboard-strn.on.fleek.co/) using fleek.co subdomain
-  - available via [dashboard.strn.network](https://dashboard.strn.network/) using CNAME record pointing at [dedicated Fleek CDN subdomain](https://b0cac29553481fefb931.b-cdn.net/)
+  - available via [dashboard.saturn.tech](https://dashboard.saturn.tech/) using CNAME record pointing at [dedicated Fleek CDN subdomain](https://b0cac29553481fefb931.b-cdn.net/)
 - deploy pull request previews of every branch with open pull request
 
 ## Updating Saturn-L2 Release Version
