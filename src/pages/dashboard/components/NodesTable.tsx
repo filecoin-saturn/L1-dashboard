@@ -1,6 +1,6 @@
 import bytes from "bytes";
 import { AgGridReact } from "ag-grid-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ChartContainer from "./ChartContainer";
 import HTMLTooltip from "../../../components/StatsGrid/HTMLTooltip";
 
@@ -13,7 +13,18 @@ import GridButton from "../../../components/StatsGrid/GridButton";
 export default function NodesTable(props: any) {
   const setSelectedNode = props.setSelectedNode;
   const [rowData, setRowData] = useState(props.metrics);
+  const gridRef = useRef<any>(null);
 
+  const renderStatusTooltip = (status: string) => {
+    switch (status) {
+      case "postponed":
+        return "Earnings for this node are postponed to the following month due to late node registration";
+      case "pending":
+        return "Earnings for this node this month are pending until the uptime requirement is satisfied";
+      case "valid":
+        return "Earnings for this node are valid for this month";
+    }
+  };
   const [columnDefs] = useState([
     {
       width: 40,
@@ -71,11 +82,25 @@ export default function NodesTable(props: any) {
         return params.data.numRequests.toLocaleString();
       },
     },
+    {
+      field: "payoutStatus",
+      headerName: "Payout Status",
+      cellRenderer: (params: any) => {
+        return params.data.payoutStatus;
+      },
+      tooltipValueGetter: (params: any) => {
+        return [renderStatusTooltip(params.data.payoutStatus)];
+      },
+    },
   ]);
 
   useEffect(() => {
     setRowData(props.metrics);
   }, [props.metrics]);
+
+  if (gridRef.current && gridRef.current.api) {
+    gridRef.current.api.sizeColumnsToFit();
+  }
 
   return (
     <ChartContainer isLoading={false}>
@@ -86,8 +111,10 @@ export default function NodesTable(props: any) {
       </div>
       <div className="ag-theme-balham-dark ag-theme-saturn h-full max-h-72 w-auto max-w-[600px]">
         <AgGridReact
+          ref={gridRef}
           rowData={rowData}
           columnDefs={columnDefs}
+          // suppressHorizontalScroll={true}
           tooltipShowDelay={0} // show without delay on mouse enter
           tooltipHideDelay={99999} // do not hide unless mouse leaves
         ></AgGridReact>
