@@ -29,7 +29,6 @@ export default function NodesTable(props: any) {
     {
       width: 40,
       suppressSizeToFit: true,
-      tooltipValueGetter: () => "Render node info",
       cellRenderer: (params: any) => {
         return (
           <button type="button" onClick={() => setSelectedNode(params.data.nodeId)}>
@@ -37,6 +36,7 @@ export default function NodesTable(props: any) {
           </button>
         );
       },
+      tooltipValueGetter: () => "Render node info",
     },
     {
       field: "nodeId",
@@ -71,7 +71,7 @@ export default function NodesTable(props: any) {
       field: "filEarned",
       headerName: "Estimated Earnings",
       sortable: true,
-      cellRenderer: (params: any) => {
+      cellRenderer: (params: Record<any, any>) => {
         return `${params.data.filAmount.toLocaleString()} FIL`;
       },
       valueGetter: (params: any) => {
