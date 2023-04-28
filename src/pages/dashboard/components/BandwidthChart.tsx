@@ -38,7 +38,7 @@ export default function BandwidthChart(props: BandwidthChartProps) {
   };
 
   const data = {
-    labels: metrics.map((m) => m.startTime),
+    labels: metrics.map((m) => m.timeStamp),
     datasets: [
       {
         data: metrics.map((m) => m.numBytes),

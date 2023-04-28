@@ -12,6 +12,7 @@ import NodesTable from "./components/NodesTable";
 import RequestsChart from "./components/RequestsChart";
 
 interface OverviewProps {
+  node: string | null;
   globalMetrics: GlobalMetrics;
   address: string;
   children?: ReactNode;
@@ -90,15 +91,74 @@ function SelectTimePeriod(props: { period: TimePeriod; setPeriod: Dispatch<SetSt
   );
 }
 
-function Overview(props: OverviewProps) {
-  // const { earnings, nodes, metrics } = props.metricsRes;
-  const { totalEarnings, totalBandwidth, totalRetrievals, nodes } = props.globalMetrics;
+const ProgressBar = (progressPercentage: number) => {
+  return (
+    <div className="min-w-10 flex-start relative flex h-4 w-full overflow-hidden bg-gray-300 font-sans text-xs font-medium text-[#0f172a]">
+      <p className="absolute left-20 ">{`${progressPercentage.toFixed(1)}% Complete`} </p>
 
+      <div
+        className={`min-w-10 flex h-full items-baseline justify-center overflow-visible break-all text-black
+        ${progressPercentage < 100 ? "bg-yellow-600" : "bg-green-600"}`}
+        style={{ width: `${progressPercentage}%` }}
+      ></div>
+    </div>
+  );
+};
+
+function Overview(props: OverviewProps) {
+  let { totalEarnings, totalBandwidth, totalRetrievals, nodes, perNodeMetrics } = props.globalMetrics;
+
+  let nodeStats;
+  if (props.node) {
+    nodeStats = perNodeMetrics.find((item) => item.nodeId === props.node);
+    if (nodeStats) {
+      totalEarnings = nodeStats.filAmount;
+      totalBandwidth = nodeStats.numBytes;
+      totalRetrievals = nodeStats.numRequests;
+    }
+  }
   // Might be worth using useMemo here if data sets become large.
   const numActiveNodes = nodes.find((d) => d.state === "active")?.count ?? 0;
   const numInactiveNodes = nodes.find((d) => d.state === "inactive")?.count ?? 0;
   const numDownNodes = nodes.find((d) => d.state === "down")?.count ?? 0;
 
+  const nodeStatusesSection = (
+    <>
+      <div>Nodes</div>
+      <div>
+        {numActiveNodes.toLocaleString()} Active
+        {numInactiveNodes > 0 && `, ${numInactiveNodes} Inactive`}
+        {numDownNodes > 0 && `, ${numDownNodes} Down`}
+      </div>
+    </>
+  );
+  const nodeStateSection = nodeStats && (
+    <>
+      <div>State</div>
+      <div>{nodeStats.state}</div>
+    </>
+  );
+
+  const nodeIdSection = nodeStats && (
+    <>
+      <div>Node Id</div>
+      <div>{props.node}</div>
+    </>
+  );
+
+  const nodePayoutSection = nodeStats && (
+    <>
+      <div>Payout Status</div>
+      <div>{nodeStats.payoutStatus}</div>
+    </>
+  );
+
+  const uptimeCompletionSection = !(nodeStats?.uptimeCompletion === undefined) && (
+    <>
+      <div> Uptime Requirement </div>
+      {ProgressBar(nodeStats.uptimeCompletion * 100)}
+    </>
+  );
   return (
     <div className="flex h-[350px] w-[100%] max-w-[600px] flex-col rounded">
       <div className="flex items-center justify-between bg-[#0066B4] py-2 px-4 text-lg">
@@ -108,14 +168,12 @@ function Overview(props: OverviewProps) {
       <div className="grid flex-1 grid-cols-[auto_1fr] items-center gap-y-2 gap-x-8 bg-slate-900 p-4">
         <div>Address</div>
         <div className="truncate">{props.address}</div>
-        <div>Nodes</div>
-        <div>
-          {numActiveNodes.toLocaleString()} Active
-          {numInactiveNodes > 0 && `, ${numInactiveNodes} Inactive`}
-          {numDownNodes > 0 && `, ${numDownNodes} Down`}
-        </div>
+        {props.node && nodeIdSection}
+        {props.node ? nodeStateSection : nodeStatusesSection}
         <div>Estimated Earnings</div>
         <div>{totalEarnings.toLocaleString()} FIL</div>
+        {props.node && nodePayoutSection}
+        {props.node && uptimeCompletionSection}
         <div>Bandwidth</div>
         <div>{bytes(totalBandwidth, { unitSeparator: " " })}</div>
         <div>Retrievals</div>
@@ -205,7 +263,7 @@ function Dashboard() {
     <div className="mx-auto mt-8 flex max-w-7xl flex-1 flex-col gap-4">
       {error && <p className="text-center text-lg text-red-600">Error: {error}</p>}
       <div className="flex flex-wrap justify-center gap-12">
-        <Overview {...{ globalMetrics, address }}>
+        <Overview {...{ globalMetrics, address, perNodeMetrics }} node={selectedNode}>
           <SelectTimePeriod period={period} setPeriod={setPeriod} />
         </Overview>
         <NodesTable metrics={perNodeMetrics} setSelectedNode={setSelectedNode} />

@@ -43,6 +43,7 @@ export default function NodesTable(props: any) {
       filter: true,
       floatingFilter: true,
       tooltipComponent: HTMLTooltip,
+      minWidth: 120,
       headerTooltip: "<div> Unique ID of the node </div>",
 
       cellRenderer: (params: any) => {
@@ -67,6 +68,28 @@ export default function NodesTable(props: any) {
       },
     },
     {
+      field: "filEarned",
+      headerName: "Estimated Earnings",
+      sortable: true,
+      cellRenderer: (params: any) => {
+        return `${params.data.filAmount.toLocaleString()} FIL`;
+      },
+      valueGetter: (params: any) => {
+        return params.data.filAmount;
+      },
+    },
+    {
+      field: "payoutStatus",
+      headerName: "Payout Status",
+      width: 110,
+      cellRenderer: (params: any) => {
+        return params.data.payoutStatus;
+      },
+      tooltipValueGetter: (params: any) => {
+        return [renderStatusTooltip(params.data.payoutStatus)];
+      },
+    },
+    {
       field: "numBytes",
       headerName: "Bandwidth Served",
       sortable: true,
@@ -82,16 +105,6 @@ export default function NodesTable(props: any) {
         return params.data.numRequests.toLocaleString();
       },
     },
-    {
-      field: "payoutStatus",
-      headerName: "Payout Status",
-      cellRenderer: (params: any) => {
-        return params.data.payoutStatus;
-      },
-      tooltipValueGetter: (params: any) => {
-        return [renderStatusTooltip(params.data.payoutStatus)];
-      },
-    },
   ]);
 
   useEffect(() => {
@@ -99,7 +112,12 @@ export default function NodesTable(props: any) {
   }, [props.metrics]);
 
   if (gridRef.current && gridRef.current.api) {
-    gridRef.current.api.sizeColumnsToFit();
+    const allColumnIds: Array<any> = [];
+    const skipHeader = false;
+    gridRef.current.columnApi.getColumns().forEach((column: any) => {
+      allColumnIds.push(column.getId());
+    });
+    gridRef.current.columnApi.autoSizeColumns(allColumnIds, skipHeader);
   }
 
   return (
@@ -114,7 +132,6 @@ export default function NodesTable(props: any) {
           ref={gridRef}
           rowData={rowData}
           columnDefs={columnDefs}
-          // suppressHorizontalScroll={true}
           tooltipShowDelay={0} // show without delay on mouse enter
           tooltipHideDelay={99999} // do not hide unless mouse leaves
         ></AgGridReact>
