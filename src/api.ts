@@ -63,7 +63,7 @@ export async function fetchMetrics(
     e.timestamp = new Date(e.timestamp);
   });
   res.metrics.forEach((m) => {
-    m.startTime = new Date(m.startTime);
+    m.timeStamp = new Date(m.timeStamp);
   });
 
   return res;
@@ -101,7 +101,7 @@ export async function fetchNodeMetrics(
     e.timestamp = new Date(e.timestamp);
   });
   res.metrics.forEach((m) => {
-    m.startTime = new Date(m.startTime);
+    m.timeStamp = new Date(m.timeStamp);
   });
 
   return res;
