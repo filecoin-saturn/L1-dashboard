@@ -27,7 +27,7 @@ export default function RequestsChart(props: RequestsChartProps) {
   };
 
   const data = {
-    labels: metrics.map((m) => m.startTime),
+    labels: metrics.map((m) => m.timeStamp),
     datasets: [
       {
         data: metrics.map((m) => m.numRequests),

@@ -4,7 +4,7 @@ export interface Node {
 }
 
 export interface Metric {
-  startTime: Date;
+  timeStamp: Date;
   numBytes: number;
   numRequests: number;
 }
@@ -14,6 +14,15 @@ export interface Earning {
   filAmount: number;
 }
 
+interface NodeStats {
+  nodeId: string;
+  filAmount: number;
+  numBytes: number;
+  numRequests: number;
+  payoutStatus: string;
+  uptimeCompletion: number | undefined;
+  state: string;
+}
 export interface GlobalStats {
   totalEarnings: number;
   totalRetrievals: number;
@@ -28,14 +37,14 @@ export interface MetricsResponse {
 
 export interface FetchAllResponse extends MetricsResponse {
   globalStats: GlobalStats;
-  perNodeMetrics: Array<object>;
+  perNodeMetrics: Array<NodeStats>;
   nodes: Node[];
 }
 export interface GlobalMetrics {
   totalEarnings: number;
   totalRetrievals: number;
   totalBandwidth: number;
-  perNodeMetrics: Array<object>;
+  perNodeMetrics: Array<NodeStats>;
   nodes: Node[];
 }
 
