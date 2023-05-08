@@ -45,8 +45,7 @@ function NodeDetails({ node }: any) {
             {node.HealthCheckFailures.map((failure: any, index: number) => (
               <dd className="mt-1 text-sm" key={index}>
                 <span className="mr-1 text-slate-400">
-                  {new Date(failure.created_at).toLocaleDateString()}{" "}
-                  {new Date(failure.created_at).toLocaleTimeString()}
+                  {new Date(failure.createdAt).toLocaleDateString()} {new Date(failure.createdAt).toLocaleTimeString()}
                 </span>
                 {failure.reason}
               </dd>

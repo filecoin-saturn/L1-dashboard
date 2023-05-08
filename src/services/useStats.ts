@@ -26,7 +26,7 @@ const middleware = (data: { admin: boolean; nodes: any[] }) => {
 
     // sort health check failures by creation date (most recent first)
     node.HealthCheckFailures.sort((a: any, b: any) => {
-      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
   });
 
