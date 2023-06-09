@@ -56,6 +56,7 @@ export async function fetchMetrics(
   url.searchParams.set("startDate", `${startDate.getTime()}`);
   url.searchParams.set("endDate", `${endDate.getTime()}`);
   url.searchParams.set("step", step);
+  url.searchParams.set("perNode", "true");
 
   const res: FetchAllResponse = await wfetch(url, { signal }, dataObj).then((r) => r.json());
 
