@@ -14,11 +14,11 @@ const middleware = (data: { admin: boolean; nodes: any[] }) => {
     } else {
       node.cacheRate1h = node.errorRate1h = node.ttfbStats.reqs_served_1h === 0 ? 0 : null;
     }
-    if (node.ttfbStats.reqs_served_24h) {
-      node.cacheRate24h = node.ttfbStats.hits_24h / node.ttfbStats.reqs_served_24h;
-      node.errorRate24h = node.ttfbStats.errors_24h / node.ttfbStats.reqs_served_24h;
+    if (node.ttfbStats.reqs_served_12h) {
+      node.cacheRate12h = node.ttfbStats.hits_12h / node.ttfbStats.reqs_served_12h;
+      node.errorRate12h = node.ttfbStats.errors_12h / node.ttfbStats.reqs_served_12h;
     } else {
-      node.cacheRate24h = node.errorRate24h = node.ttfbStats.reqs_served_24h === 0 ? 0 : null;
+      node.cacheRate12h = node.errorRate12h = node.ttfbStats.reqs_served_12h === 0 ? 0 : null;
     }
     node.HealthCheckFailures = node.HealthCheckFailures ?? []; // ensure that this property is defined
     node.memoryUsed = node.memoryStats.totalMemoryKB - node.memoryStats.availableMemoryKB;

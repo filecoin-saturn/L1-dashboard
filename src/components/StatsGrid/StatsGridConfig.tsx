@@ -396,7 +396,7 @@ export const columnDefs = [
       return [
         htmlBold("TTFB (Time To First Byte)"),
         "This is the time it takes by avarage for the node to respond to a request.",
-        "1h and 24h displayed in this column are the 95th percentile of the response times from last hour and 24 hours respectively. " +
+        "1h and 12h displayed in this column are the 95th percentile of the response times from last hour and 24 hours respectively. " +
           "Both of those values are taken into account when calculating the node's weight - the lower the values the better. " +
           "These numbers are mostly impacted by cache hit rates and should improve over time when cache fills up. " +
           "High values can also mean that either node's base latency is high or error rate is high.",
@@ -421,16 +421,16 @@ export const columnDefs = [
             </span>
           </div>
           <div className="overflow-clip text-ellipsis">
-            24h:{" "}
+            12h:{" "}
             <span
               className={classNames({
-                "font-bold text-red-500": params.data.ttfbStats.p95_24h >= 2000,
-                "text-red-500": params.data.ttfbStats.p95_24h >= 1500 && params.data.ttfbStats.p95_24h < 2000,
-                "text-orange-500": params.data.ttfbStats.p95_24h >= 1200 && params.data.ttfbStats.p95_24h < 1500,
-                "text-yellow-500": params.data.ttfbStats.p95_24h >= 1000 && params.data.ttfbStats.p95_24h < 1200,
+                "font-bold text-red-500": params.data.ttfbStats.p95_12h >= 2000,
+                "text-red-500": params.data.ttfbStats.p95_12h >= 1500 && params.data.ttfbStats.p95_12h < 2000,
+                "text-orange-500": params.data.ttfbStats.p95_12h >= 1200 && params.data.ttfbStats.p95_12h < 1500,
+                "text-yellow-500": params.data.ttfbStats.p95_12h >= 1000 && params.data.ttfbStats.p95_12h < 1200,
               })}
             >
-              {params.data.ttfbStats.p95_24h ?? "NA"}
+              {params.data.ttfbStats.p95_12h ?? "NA"}
             </span>
           </div>
         </>
@@ -450,12 +450,12 @@ export const columnDefs = [
       return [
         htmlBold("Cache hit rate of served requests."),
         "This is the percentage of requests that were served from cache.",
-        "1h and 24h displayed in this column are cache hit rates from the last hour and 24 hours respectively. " +
+        "1h and 12h displayed in this column are cache hit rates from the last hour and 24 hours respectively. " +
           "Both of those values are taken into account when calculating the node's weight - the higher the values the better.",
         "These numbers are mostly impacted by the number of unique requests and should improve over time when cache fills up. " +
           "Consistently low cache hit rates can indicate that either the node is not caching requests properly (check available disk space in cache directory location) " +
           "or that the node is serving a lot of unique requests (if that is the case then other nodes in this physical location should have lowered cache hit rates too).",
-        "Tooltip: Total number of requests in 1h and 24h time spans.",
+        "Tooltip: Total number of requests in 1h and 12h time spans.",
       ];
     })(),
     sortable: true,
@@ -476,16 +476,16 @@ export const columnDefs = [
             </span>
           </div>
           <div className="overflow-clip text-ellipsis">
-            24h:{" "}
+            12h:{" "}
             <span
               className={classNames({
-                "font-bold text-red-500": params.data.cacheRate24h < 0.7,
-                "text-red-500": params.data.cacheRate24h >= 0.7 && params.data.cacheRate24h < 0.8,
-                "text-orange-500": params.data.cacheRate24h >= 0.8 && params.data.cacheRate24h < 0.9,
-                "text-yellow-500": params.data.cacheRate24h >= 0.9 && params.data.cacheRate24h < 0.95,
+                "font-bold text-red-500": params.data.cacheRate12h < 0.7,
+                "text-red-500": params.data.cacheRate12h >= 0.7 && params.data.cacheRate12h < 0.8,
+                "text-orange-500": params.data.cacheRate12h >= 0.8 && params.data.cacheRate12h < 0.9,
+                "text-yellow-500": params.data.cacheRate12h >= 0.9 && params.data.cacheRate12h < 0.95,
               })}
             >
-              {params.data.cacheRate24h === null ? "n/a" : asPercent(params.data.cacheRate24h)}
+              {params.data.cacheRate12h === null ? "n/a" : asPercent(params.data.cacheRate12h)}
             </span>
           </div>
         </>
@@ -503,11 +503,11 @@ export const columnDefs = [
       return [
         htmlBold("Error rate of served requests."),
         "This is the percentage of requests that were responded with server or gateway error (only 5xx status codes).",
-        "1h and 24h displayed in this column are error rates from last hour and 24 hours respectively. " +
+        "1h and 12h displayed in this column are error rates from last hour and 24 hours respectively. " +
           "Both of those values are taken into account when calculating the node's weight - the lower the values the better.",
         "Usually errors are caused by timeouts from ipfs.io gateway on requests to resources that were not cached yet and should improve with cache hit rates rising over time. " +
           "Consistently high error rates with high cache hit rates can indicate network or configuration issues or ipfs.io gateway issues (outages, high load or failing to retrieve content).",
-        "Tooltip: Total number of requests in 1h and 24h time spans.",
+        "Tooltip: Total number of requests in 1h and 12h time spans.",
       ];
     })(),
     sortable: true,
@@ -528,16 +528,16 @@ export const columnDefs = [
             </span>
           </div>
           <div className="overflow-clip text-ellipsis">
-            24h:{" "}
+            12h:{" "}
             <span
               className={classNames({
-                "font-bold text-red-500": params.data.errorRate24h >= 0.5,
-                "text-red-500": params.data.errorRate24h >= 0.3 && params.data.errorRate24h < 0.5,
-                "text-orange-500": params.data.errorRate24h >= 0.1 && params.data.errorRate24h < 0.3,
-                "text-yellow-500": params.data.errorRate24h >= 0.01 && params.data.errorRate24h < 0.1,
+                "font-bold text-red-500": params.data.errorRate12h >= 0.5,
+                "text-red-500": params.data.errorRate12h >= 0.3 && params.data.errorRate12h < 0.5,
+                "text-orange-500": params.data.errorRate12h >= 0.1 && params.data.errorRate12h < 0.3,
+                "text-yellow-500": params.data.errorRate12h >= 0.01 && params.data.errorRate12h < 0.1,
               })}
             >
-              {params.data.errorRate24h === null ? "n/a" : asPercent(params.data.errorRate24h)}
+              {params.data.errorRate12h === null ? "n/a" : asPercent(params.data.errorRate12h)}
             </span>
           </div>
         </>
