@@ -8,6 +8,7 @@ import { CopyIcon, ProjectRoadmapIcon, ListUnorderedIcon } from "@primer/octicon
 import copy from "copy-text-to-clipboard";
 import classNames from "classnames";
 import GridButton from "../../../components/StatsGrid/GridButton";
+import { PAYOUT_STATUS_MAPPING } from "..";
 
 // Chart config must take into account that earnings are calculated once per day
 export default function NodesTable(props: any) {
@@ -84,12 +85,8 @@ export default function NodesTable(props: any) {
       width: 110,
       cellRenderer: (params: any) => {
         const payoutStatus = params.data.payoutStatus;
-        const statusMapping: Record<string, string> = {
-          valid: "Eligible",
-          pending: "In Progress",
-        };
 
-        return statusMapping[payoutStatus];
+        return PAYOUT_STATUS_MAPPING[payoutStatus];
       },
       tooltipValueGetter: (params: any) => {
         return [renderStatusTooltip(params.data.payoutStatus)];
