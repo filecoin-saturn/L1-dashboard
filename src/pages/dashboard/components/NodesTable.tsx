@@ -80,10 +80,16 @@ export default function NodesTable(props: any) {
     },
     {
       field: "payoutStatus",
-      headerName: "Payout Status",
+      headerName: "Payout Eligibility",
       width: 110,
       cellRenderer: (params: any) => {
-        return params.data.payoutStatus;
+        const payoutStatus = params.data.payoutStatus;
+        const statusMapping: Record<string, string> = {
+          valid: "Eligible",
+          pending: "In Progress",
+        };
+
+        return statusMapping[payoutStatus];
       },
       tooltipValueGetter: (params: any) => {
         return [renderStatusTooltip(params.data.payoutStatus)];
