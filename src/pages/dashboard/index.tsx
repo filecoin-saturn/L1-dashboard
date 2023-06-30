@@ -18,6 +18,12 @@ interface OverviewProps {
   children?: ReactNode;
 }
 
+const UPTIME_REQ_DOCS = "https://docs.saturn.tech/nodes-uptime-requirement";
+export const PAYOUT_STATUS_MAPPING: Record<string, string> = {
+  valid: "Eligible",
+  pending: "In Progress",
+};
+
 function createChartProps(period: TimePeriod) {
   let dateRange;
   let step: DurationUnitType; // group by this time unit
@@ -148,14 +154,22 @@ function Overview(props: OverviewProps) {
 
   const nodePayoutSection = nodeStats && (
     <>
-      <div>Payout Status</div>
-      <div>{nodeStats.payoutStatus}</div>
+      <div>
+        <a href={UPTIME_REQ_DOCS} target="_blank" rel="noopener noreferrer">
+          Payout Eligibility
+        </a>
+      </div>
+      <div>{PAYOUT_STATUS_MAPPING[nodeStats.payoutStatus]}</div>
     </>
   );
 
   const uptimeCompletionSection = !(nodeStats?.uptimeCompletion === undefined) && (
     <>
-      <div> Uptime Requirement </div>
+      <div>
+        <a href={UPTIME_REQ_DOCS} target="_blank" rel="noopener noreferrer">
+          Uptime Requirement
+        </a>
+      </div>
       {ProgressBar(nodeStats.uptimeCompletion * 100)}
     </>
   );
