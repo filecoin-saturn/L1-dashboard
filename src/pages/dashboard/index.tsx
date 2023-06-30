@@ -22,6 +22,7 @@ const UPTIME_REQ_DOCS = "https://docs.saturn.tech/nodes-uptime-requirement";
 export const PAYOUT_STATUS_MAPPING: Record<string, string> = {
   valid: "Eligible",
   pending: "In Progress",
+  postponed: "Postponed",
 };
 
 function createChartProps(period: TimePeriod) {
