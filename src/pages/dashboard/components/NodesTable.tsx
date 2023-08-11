@@ -124,7 +124,7 @@ export default function NodesTable(props: any) {
   }
 
   return (
-    <ChartContainer isLoading={false}>
+    <ChartContainer isLoading={props.isLoading}>
       <div>
         <GridButton onClick={() => setSelectedNode(null)} className="m-2 min-w-[155px]">
           <ListUnorderedIcon className="-ml-0.5 mr-2 h-4 w-4" aria-hidden="true" /> Reset Charts to Include All Nodes
@@ -133,11 +133,13 @@ export default function NodesTable(props: any) {
       <div className="ag-theme-balham-dark ag-theme-saturn h-full max-h-72 w-auto max-w-[600px]">
         <AgGridReact
           ref={gridRef}
-          rowData={rowData}
+          rowData={props.isLoading ? undefined : rowData}
           columnDefs={columnDefs}
           tooltipShowDelay={0} // show without delay on mouse enter
           tooltipHideDelay={99999} // do not hide unless mouse leaves
-        ></AgGridReact>
+          overlayNoRowsTemplate={props.isLoading ? "<span />" : undefined}
+          suppressLoadingOverlay={true}
+        />
       </div>
     </ChartContainer>
   );

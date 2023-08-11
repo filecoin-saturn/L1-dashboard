@@ -10,12 +10,14 @@ import BandwidthChart from "./components/BandwidthChart";
 import EarningsChart from "./components/EarningsChart";
 import NodesTable from "./components/NodesTable";
 import RequestsChart from "./components/RequestsChart";
+import Loader from "../../components/Loader";
 
 interface OverviewProps {
   node: string | null;
   globalMetrics: GlobalMetrics;
   address: string;
   children?: ReactNode;
+  isLoading: boolean;
 }
 
 const UPTIME_REQ_DOCS = "https://docs.saturn.tech/nodes-uptime-requirement";
@@ -114,6 +116,7 @@ const ProgressBar = (progressPercentage: number) => {
 
 function Overview(props: OverviewProps) {
   let { totalEarnings, totalBandwidth, totalRetrievals, nodes, perNodeMetrics } = props.globalMetrics;
+  const { isLoading } = props;
 
   let nodeStats;
   if (props.node) {
@@ -180,19 +183,25 @@ function Overview(props: OverviewProps) {
         Overview
         {props.children}
       </div>
-      <div className="grid flex-1 grid-cols-[auto_1fr] items-center gap-y-2 gap-x-8 bg-slate-900 p-4">
-        <div>Address</div>
-        <div className="truncate">{props.address}</div>
-        {props.node && nodeIdSection}
-        {props.node ? nodeStateSection : nodeStatusesSection}
-        <div>Estimated Earnings</div>
-        <div>{totalEarnings.toLocaleString()} FIL</div>
-        {props.node && nodePayoutSection}
-        {props.node && uptimeCompletionSection}
-        <div>Bandwidth</div>
-        <div>{bytes(totalBandwidth, { unitSeparator: " " })}</div>
-        <div>Retrievals</div>
-        <div>{totalRetrievals.toLocaleString()}</div>
+      <div className="relative grid flex-1 grid-cols-[auto_1fr] items-center gap-y-2 gap-x-8 bg-slate-900 p-4">
+        {isLoading ? (
+          <Loader className="absolute top-0 bottom-0 left-0 right-0 m-auto" size={48} />
+        ) : (
+          <>
+            <div>Address</div>
+            <div className="truncate">{props.address}</div>
+            {props.node && nodeIdSection}
+            {props.node ? nodeStateSection : nodeStatusesSection}
+            <div>Estimated Earnings</div>
+            <div>{totalEarnings.toLocaleString()} FIL</div>
+            {props.node && nodePayoutSection}
+            {props.node && uptimeCompletionSection}
+            <div>Bandwidth</div>
+            <div>{bytes(totalBandwidth, { unitSeparator: " " })}</div>
+            <div>Retrievals</div>
+            <div>{totalRetrievals.toLocaleString()}</div>
+          </>
+        )}
       </div>
     </div>
   );
@@ -278,10 +287,10 @@ function Dashboard() {
     <div className="mx-auto mt-8 flex max-w-7xl flex-1 flex-col gap-4">
       {error && <p className="text-center text-lg text-red-600">Error: {error}</p>}
       <div className="flex flex-wrap justify-center gap-12">
-        <Overview {...{ globalMetrics, address, perNodeMetrics }} node={selectedNode}>
+        <Overview {...{ globalMetrics, address, perNodeMetrics, isLoading }} node={selectedNode}>
           <SelectTimePeriod period={period} setPeriod={setPeriod} />
         </Overview>
-        <NodesTable metrics={perNodeMetrics} setSelectedNode={setSelectedNode} />
+        <NodesTable metrics={perNodeMetrics} setSelectedNode={setSelectedNode} isLoading={isLoading} />
         <EarningsChart earnings={earnings} node={selectedNode} {...chartPropsFinal} />
         <RequestsChart metrics={metrics} node={selectedNode} {...chartPropsFinal} />
         <BandwidthChart metrics={metrics} node={selectedNode} {...chartPropsFinal} />
