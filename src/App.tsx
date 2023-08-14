@@ -19,6 +19,7 @@ export default function App() {
           <Route path=":encodedState" element={<Stats />} />
         </Route>
         <Route path="/address" element={<Home />} />
+        <Route path="/address/:address/:nodeId" element={<Dashboard />} />
         <Route path="/address/:address" element={<Dashboard />} />
       </Routes>
       <AuthenticateModal />

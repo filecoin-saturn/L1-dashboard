@@ -1,7 +1,7 @@
 import bytes from "bytes";
 import dayjs from "dayjs";
 import type { DurationUnitType } from "dayjs/plugin/duration";
-import { Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import * as api from "../../api";
 import { GlobalMetrics, MetricsResponse, TimePeriod } from "../../api.types";
@@ -12,7 +12,7 @@ import NodesTable from "./components/NodesTable";
 import RequestsChart from "./components/RequestsChart";
 
 interface OverviewProps {
-  node: string | null;
+  node?: string | null;
   globalMetrics: GlobalMetrics;
   address: string;
   children?: ReactNode;
@@ -80,13 +80,13 @@ function createChartProps(period: TimePeriod) {
   return { dateRange, xScale, step, spanGaps, isLoading: false };
 }
 
-function SelectTimePeriod(props: { period: TimePeriod; setPeriod: Dispatch<SetStateAction<TimePeriod>> }) {
+function SelectTimePeriod(props: { period: TimePeriod; handleChangePeriod: (timePeriod: TimePeriod) => void }) {
   const options = Object.values(TimePeriod);
 
   return (
     <select
       value={props.period}
-      onChange={(e) => props.setPeriod(e.target.value as TimePeriod)}
+      onChange={(e) => props.handleChangePeriod(e.target.value as TimePeriod)}
       className="rounded bg-slate-900 p-1"
     >
       {options.map((o) => (
@@ -199,15 +199,11 @@ function Overview(props: OverviewProps) {
 }
 
 function Dashboard() {
-  const { address = "" } = useParams();
+  const { address = "", nodeId } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<null | string>(null);
 
-  const [selectedNode, setSelectedNode] = useState<null | string>(null);
-
-  const defaultPeriod = (searchParams.get("period") as TimePeriod) ?? TimePeriod.WEEK;
-  const [period, setPeriod] = useState<TimePeriod>(defaultPeriod);
   const [globalMetrics, setGlobalMetrics] = useState<GlobalMetrics>({
     totalEarnings: 0,
     totalRetrievals: 0,
@@ -219,6 +215,16 @@ function Dashboard() {
     earnings: [],
     metrics: [],
   });
+
+  const period = useMemo(() => {
+    const periodQS = searchParams.get("period");
+    if (!periodQS) {
+      searchParams.set("period", TimePeriod.WEEK);
+      setSearchParams(searchParams);
+    }
+
+    return (periodQS as TimePeriod) ?? TimePeriod.WEEK;
+  }, [searchParams]);
 
   const chartProps = createChartProps(period);
 
@@ -234,17 +240,22 @@ function Dashboard() {
     try {
       const { startDate, endDate } = chartProps.dateRange;
 
-      let metricsRes;
-      if (selectedNode) {
-        metricsRes = await api.fetchNodeMetrics(selectedNode, startDate, endDate, chartProps.step, controller.signal);
-      } else {
-        metricsRes = await api.fetchMetrics(address, startDate, endDate, chartProps.step, controller.signal);
-        const { globalStats, nodes, perNodeMetrics } = metricsRes;
-        setGlobalMetrics({ ...globalStats, nodes, perNodeMetrics });
+      let nodeMetricRes;
+      if (nodeId) {
+        nodeMetricRes = await api.fetchNodeMetrics(nodeId, startDate, endDate, chartProps.step, controller.signal);
       }
+      const addressMetricRes = await api.fetchMetrics(address, startDate, endDate, chartProps.step, controller.signal);
+      const { globalStats, nodes, perNodeMetrics } = addressMetricRes;
+      setGlobalMetrics({ ...globalStats, nodes, perNodeMetrics });
 
-      const { earnings, metrics } = metricsRes;
-      setMetricsRes({ earnings, metrics });
+      if (nodeId && nodeMetricRes) {
+        const { earnings, metrics } = nodeMetricRes;
+        setMetricsRes({ earnings, metrics });
+      }
+      if (!nodeId && addressMetricRes) {
+        const { earnings, metrics } = addressMetricRes;
+        setMetricsRes({ earnings, metrics });
+      }
 
       setChartPropsFinal(chartProps);
     } catch (err) {
@@ -262,29 +273,37 @@ function Dashboard() {
     if (!address) {
       return;
     }
-
-    searchParams.set("period", period);
-    setSearchParams(searchParams);
     const controller = new AbortController();
     fetchData(controller);
 
     return () => controller.abort();
-  }, [address, period, selectedNode]);
+  }, [nodeId, address, period]);
+
+  const handleChangePeriod = (timePeriod: TimePeriod) => {
+    searchParams.set("period", timePeriod);
+    setSearchParams(searchParams);
+  };
 
   const { perNodeMetrics } = globalMetrics;
   const { metrics, earnings } = metricsRes;
 
   return (
-    <div className="mx-auto mt-8 flex max-w-7xl flex-1 flex-col gap-4">
+    <div className="flex-1">
       {error && <p className="text-center text-lg text-red-600">Error: {error}</p>}
-      <div className="flex flex-wrap justify-center gap-12">
-        <Overview {...{ globalMetrics, address, perNodeMetrics }} node={selectedNode}>
-          <SelectTimePeriod period={period} setPeriod={setPeriod} />
-        </Overview>
-        <NodesTable metrics={perNodeMetrics} setSelectedNode={setSelectedNode} />
-        <EarningsChart earnings={earnings} node={selectedNode} {...chartPropsFinal} />
-        <RequestsChart metrics={metrics} node={selectedNode} {...chartPropsFinal} />
-        <BandwidthChart metrics={metrics} node={selectedNode} {...chartPropsFinal} />
+      <div className="mt-8 flex h-[calc(100%_-_58px)] w-full flex-col gap-1 lg:flex-row">
+        <div className="order-first mb-12 lg:mb-0 ">
+          <NodesTable metrics={perNodeMetrics} isLoading={isLoading} />
+        </div>
+        <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-4">
+          <div className="flex flex-wrap justify-center gap-12">
+            <Overview {...{ globalMetrics, address, perNodeMetrics }} node={nodeId}>
+              <SelectTimePeriod period={period} handleChangePeriod={handleChangePeriod} />
+            </Overview>
+            <BandwidthChart metrics={metrics} node={nodeId} {...chartPropsFinal} />
+            <EarningsChart earnings={earnings} node={nodeId} {...chartPropsFinal} />
+            <RequestsChart metrics={metrics} node={nodeId} {...chartPropsFinal} />
+          </div>
+        </div>
       </div>
     </div>
   );

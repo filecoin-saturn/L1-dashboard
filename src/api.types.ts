@@ -14,7 +14,7 @@ export interface Earning {
   filAmount: number;
 }
 
-interface NodeStats {
+export interface NodeStats {
   nodeId: string;
   filAmount: number;
   numBytes: number;
@@ -59,4 +59,10 @@ export enum TimePeriod {
   MONTH = "30 Days",
   THREE_MONTHS = "90 Days",
   ONE_YEAR = "365 Days",
+}
+
+export enum PayoutStatus {
+  Postponed = "postponed",
+  Pending = "pending",
+  Valid = "valid",
 }
