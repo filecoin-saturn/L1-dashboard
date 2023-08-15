@@ -27,8 +27,8 @@ export default function ChartContainer(props: ChartContainerProps) {
         "h-full": props.fullHeight,
       })}
     >
-      {props.isLoading && <Loader className="absolute right-2 top-2" />}
       {props.children}
+      {props.isLoading && <Loader className="absolute top-0 bottom-0 left-0 right-0 m-auto" size={48} />}
     </div>
   );
 }

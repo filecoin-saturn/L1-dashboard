@@ -217,10 +217,12 @@ export default function NodeTable(props: NodeTableProps) {
         <div className="ag-theme-balham-dark ag-theme-saturn h-full w-auto max-w-[600px] pb-10">
           <AgGridReact
             ref={gridRef}
-            rowData={rowData}
+            rowData={props.isLoading ? undefined : rowData}
             columnDefs={columnDefs}
             tooltipShowDelay={0} // show without delay on mouse enter
             tooltipHideDelay={99999} // do not hide unless mouse leaves
+            overlayNoRowsTemplate={props.isLoading ? "<span />" : undefined}
+            suppressLoadingOverlay={true}
           />
         </div>
       </ChartContainer>
