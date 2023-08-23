@@ -52,11 +52,32 @@ export interface RequestInit extends globalThis.RequestInit {
   timeout?: number;
 }
 
+export enum PastNUnitsPeriod {
+  DAY = "Past 24 hours",
+  WEEK = "Past 7 days",
+  MONTH = "Past 30 days",
+  THREE_MONTHS = "Past 90 days",
+  ONE_YEAR = "Past 365 days",
+}
+
 export enum TimePeriod {
-  DAY = "1 Day",
-  WEEK = "7 Days",
-  TWO_WEEK = "14 Days",
-  MONTH = "30 Days",
-  THREE_MONTHS = "90 Days",
-  ONE_YEAR = "365 Days",
+  PastNUnitsPeriod = "Past N Days",
+  EarningsPeriod = "Earning period",
+  Range = "Date range",
+}
+
+export interface EarningsPeriod {
+  month: string;
+  date: Date;
+}
+
+export interface DateRange {
+  startDate: Date;
+  endDate: Date;
+}
+
+export enum FilterType {
+  PastNUnits = "PastNUnitsPeriod",
+  Earnings = "EarningsPeriod",
+  DateRange = "Range",
 }
