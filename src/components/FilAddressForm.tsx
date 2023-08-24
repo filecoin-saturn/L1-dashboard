@@ -62,8 +62,9 @@ function FilAddressForm(props: FilAddressFormProps) {
         onChange={(e) => setAddress(e.target.value)}
         autoFocus={props.autoFocus}
         required
+        data-testid="input-field"
       />
-      <button onClick={handleAddress}>
+      <button onClick={handleAddress} data-testid="search-button">
         <SearchIcon
           className={`absolute right-2 top-0 bottom-0
                     m-auto cursor-pointer text-slate-100 hover:text-sky-700 ${iconClasses}`}

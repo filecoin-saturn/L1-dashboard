@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import classNames from "classnames";
 
-export default function GridButton({ children, onClick, className }: any) {
+export default function GridButton({ children, onClick, className, testId }: any) {
   const [clicked, setClicked] = useState(false);
 
   useEffect(() => {
@@ -22,6 +22,7 @@ export default function GridButton({ children, onClick, className }: any) {
 
   return (
     <button
+      data-testid={testId}
       type="button"
       onClick={() => {
         setClicked(true);

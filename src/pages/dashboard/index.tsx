@@ -90,6 +90,7 @@ function SelectTimePeriod(props: { period: TimePeriod; setPeriod: Dispatch<SetSt
       value={props.period}
       onChange={(e) => props.setPeriod(e.target.value as TimePeriod)}
       className="rounded bg-slate-900 p-1"
+      data-testid="time-period-select"
     >
       {options.map((o) => (
         <option key={o} value={o}>
@@ -189,17 +190,19 @@ function Overview(props: OverviewProps) {
         ) : (
           <>
             <div>Address</div>
-            <div className="truncate">{props.address}</div>
+            <div data-testid="address" className="truncate">
+              {props.address}
+            </div>
             {props.node && nodeIdSection}
             {props.node ? nodeStateSection : nodeStatusesSection}
             <div>Estimated Earnings</div>
-            <div>{totalEarnings.toLocaleString()} FIL</div>
+            <div data-testid="earnings">{totalEarnings.toLocaleString()} FIL</div>
             {props.node && nodePayoutSection}
             {props.node && uptimeCompletionSection}
             <div>Bandwidth</div>
-            <div>{bytes(totalBandwidth, { unitSeparator: " " })}</div>
+            <div data-testid="bandwidth">{bytes(totalBandwidth, { unitSeparator: " " })}</div>
             <div>Retrievals</div>
-            <div>{totalRetrievals.toLocaleString()}</div>
+            <div data-testid="requests">{totalRetrievals.toLocaleString()}</div>
           </>
         )}
       </div>

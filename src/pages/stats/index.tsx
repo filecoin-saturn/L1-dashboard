@@ -52,9 +52,9 @@ export default function Stats() {
   }
 
   return (
-    <>
+    <div data-testid="stats-grid" className="h-full">
       <StatsGrid />
       <NodeDetails />
-    </>
+    </div>
   );
 }

@@ -72,7 +72,7 @@ export default function AuthenticateModal() {
               <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-slate-800 px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
                 <form className="space-y-6" onSubmit={formik.handleSubmit}>
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium">
+                    <label htmlFor="username" className="block text-sm font-medium">
                       Username
                     </label>
                     <div className="mt-1">

@@ -49,7 +49,7 @@ export default function BandwidthChart(props: BandwidthChartProps) {
 
   return (
     <ChartContainer isLoading={isLoading}>
-      <Line options={options} data={data} />
+      <Line data-testid="bandwidthChart" options={options} data={data} />
     </ChartContainer>
   );
 }

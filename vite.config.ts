@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import { NodeGlobalsPolyfillPlugin } from "@esbuild-plugins/node-globals-polyfill";
 import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react-swc";
@@ -36,6 +37,14 @@ export default defineConfig(({ command, mode }) => {
         // Buffer required for @glif/filecoin-address to work
         plugins: [inject({ Buffer: ["buffer", "Buffer"] })],
       },
+    },
+    test: {
+      globals: true,
+      environmentMatchGlobs: [
+        // all tests in tests/unit will run in jsdom
+        ["test/unit/**", "jsdom"],
+      ],
+      setupFiles: "./test/setup.ts",
     },
   };
 });

@@ -7,7 +7,7 @@ import { DispatchContext, StateContext } from "../../state/Context";
 
 function NodeDetails({ node }: any) {
   return (
-    <div className="mt-5 border-t border-gray-200 px-4 py-5 text-slate-200 sm:px-6">
+    <div data-testid="node-details" className="mt-5 border-t border-gray-200 px-4 py-5 text-slate-200 sm:px-6">
       <dl className="grid grid-cols-1 gap-x-1 gap-y-2 sm:grid-cols-2">
         <div className="sm:col-span-1">
           <dt className="text-sm text-slate-400">Node details</dt>
@@ -98,6 +98,7 @@ export default function NodeDetailsPanel() {
                             type="button"
                             className="rounded-md text-slate-200 hover:text-gray-500 focus:outline-none"
                             onClick={() => onClose()}
+                            data-testid="close-panel"
                           >
                             <span className="sr-only">Close panel</span>
                             <SidebarCollapseIcon className="h-6 w-6" aria-hidden="true" />

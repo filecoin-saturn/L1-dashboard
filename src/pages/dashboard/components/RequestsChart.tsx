@@ -38,7 +38,7 @@ export default function RequestsChart(props: RequestsChartProps) {
 
   return (
     <ChartContainer isLoading={isLoading}>
-      <Line options={options} data={data} />
+      <Line data-testid="requestsChart" options={options} data={data} />
     </ChartContainer>
   );
 }
