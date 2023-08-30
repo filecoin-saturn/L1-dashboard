@@ -290,7 +290,7 @@ export const columnDefs = [
               })}
             >
               {params.data.HealthCheckFailures.length} fail{params.data.HealthCheckFailures.length > 1 && "s"} / last
-              24h
+              12h
             </div>
           )}
         </>
@@ -303,7 +303,7 @@ export const columnDefs = [
       if (data.HealthCheckFailures.length) {
         const fails = `${data.HealthCheckFailures.length} fail${
           data.HealthCheckFailures.length > 1 ? "s" : ""
-        } in last 24 hours`;
+        } in last 12 hours`;
 
         return [...biases, "<hr />", fails];
       }
