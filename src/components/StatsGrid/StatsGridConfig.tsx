@@ -124,14 +124,34 @@ export const columnDefs = [
     },
     valueFormatter: (params: any) => params.data.idShort,
     cellRenderer: (params: any) => {
+      const badges = [];
+      const badgeMap: Record<string, string> = {
+        sunrise: "🌅️",
+        core: "⭐️",
+        cassini: "🛰",
+      };
+
+      for (const property in badgeMap) {
+        if (params.data[property as keyof typeof badgeMap]) {
+          badges.push(badgeMap[property]);
+        }
+      }
+
       return (
         <>
           <button type="button" onClick={() => copy(params.data.id)}>
             <CopyIcon className="cursor-pointer text-slate-600 hover:text-slate-500" />
           </button>{" "}
-          {params.valueFormatted} {params.data.sunrise ? <span>🌅️</span> : null}
-          {params.data.core ? <span>⭐️</span> : null}
-          {params.data.cassini ? <span>🛰</span> : null}
+          {params.valueFormatted}
+          <div className="pl-4">
+            {badges.map((badge, idx) => {
+              return (
+                <span className="ml-1" key={idx}>
+                  {badge}
+                </span>
+              );
+            })}
+          </div>
         </>
       );
     },
