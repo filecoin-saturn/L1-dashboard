@@ -58,7 +58,7 @@ export default function NodeTable(props: NodeTableProps) {
   const renderPayoutIcon = (status: PayoutStatus) => {
     switch (status) {
       case PayoutStatus.Postponed:
-        return PAYOUT_STATUS_MAPPING[status];
+        return <ClockFillIcon className="cursor-pointer text-gray-300" />;
       case PayoutStatus.Pending:
         return <ClockFillIcon className="cursor-pointer text-yellow-300" />;
       case PayoutStatus.Valid:
