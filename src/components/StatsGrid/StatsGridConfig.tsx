@@ -143,7 +143,7 @@ export const columnDefs = [
             <CopyIcon className="cursor-pointer text-slate-600 hover:text-slate-500" />
           </button>{" "}
           {params.valueFormatted}
-          <div className="pl-4">
+          <div className="absolute top-[15px] pl-4">
             {badges.map((badge, idx) => {
               return (
                 <span className="ml-1" key={idx}>
