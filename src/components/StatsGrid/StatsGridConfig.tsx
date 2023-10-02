@@ -107,7 +107,7 @@ export const columnDefs = [
   },
   {
     field: "id",
-    headerName: "ID",
+    headerName: "ID or Badge Name",
     headerTooltip: (() => {
       return [
         htmlBold("Unique ID of the node (only first part of the ID is shown)."),
