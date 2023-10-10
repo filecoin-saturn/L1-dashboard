@@ -7,19 +7,26 @@ const middleware = (data: { admin: boolean; nodes: any[] }) => {
   data.nodes.forEach((node) => {
     node.idShort = node.id.split("-")[0]; // short id (first section of guid)
     node.versionShort = node.version.split("_")[0]; // short version (just first vXXX section)
-    node.ispShort = (node.geoloc.asn?.name ?? node.speedtest?.isp ?? "Unknown ISP").split(" ").slice(0, 2).join(" ");
+    node.ispShort = (node.geoloc.asn?.name ?? node.speedtest?.isp ?? "Unknown ISP")
+      .replaceAll(", ", " ")
+      .split(" ")
+      .slice(0, 2)
+      .join(" ");
+
     if (node.ttfbStats.reqs_served_1h) {
       node.cacheRate1h = node.ttfbStats.hits_1h / node.ttfbStats.reqs_served_1h;
       node.errorRate1h = node.ttfbStats.errors_1h / node.ttfbStats.reqs_served_1h;
     } else {
       node.cacheRate1h = node.errorRate1h = node.ttfbStats.reqs_served_1h === 0 ? 0 : null;
     }
+
     if (node.ttfbStats.reqs_served_12h) {
       node.cacheRate12h = node.ttfbStats.hits_12h / node.ttfbStats.reqs_served_12h;
       node.errorRate12h = node.ttfbStats.errors_12h / node.ttfbStats.reqs_served_12h;
     } else {
       node.cacheRate12h = node.errorRate12h = node.ttfbStats.reqs_served_12h === 0 ? 0 : null;
     }
+
     node.HealthCheckFailures = node.HealthCheckFailures ?? []; // ensure that this property is defined
     node.memoryUsed = node.memoryStats.totalMemoryKB - node.memoryStats.availableMemoryKB;
     node.cpuAvgLoad = node.cpuStats.loadAvgs[1];
