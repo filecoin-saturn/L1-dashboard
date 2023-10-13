@@ -60,16 +60,16 @@ export default function StatsGridActions({ gridApi, columnApi }: any) {
 
   return (
     <div className="m-2 mt-0 flex justify-center space-x-2">
-      <GridButton onClick={handleResetFilters}>
+      <GridButton testId="reset-filters-button" onClick={handleResetFilters}>
         <FilterIcon className="-ml-0.5 mr-2 h-4 w-4" aria-hidden="true" /> Reset filters
       </GridButton>
 
-      <GridButton onClick={handleShareGrid} className="min-w-[150px]">
+      <GridButton testId="share-grid-button" onClick={handleShareGrid} className="min-w-[150px]">
         <ShareIcon className="-ml-0.5 mr-2 h-4 w-4" aria-hidden="true" />{" "}
         {shareCopied ? "Copied to clipboard!" : "Share Current Grid"}
       </GridButton>
 
-      <GridButton onClick={handleStatsAutoRefreshToggle} className="min-w-[155px]">
+      <GridButton testId="auto-refresh-toggle" onClick={handleStatsAutoRefreshToggle} className="min-w-[155px]">
         <SyncIcon className="-ml-0.5 mr-2 h-4 w-4" aria-hidden="true" />{" "}
         {state.statsAutoRefresh ? "Disable Auto Refresh" : "Enable Auto Refresh"}
       </GridButton>
@@ -79,7 +79,7 @@ export default function StatsGridActions({ gridApi, columnApi }: any) {
           <UnlockIcon className="-ml-0.5 mr-2 h-4 w-4" aria-hidden="true" /> Admin Authenticated
         </GridButton>
       ) : (
-        <GridButton onClick={handleAuthentication}>
+        <GridButton testId="admin-auth" onClick={handleAuthentication}>
           <LockIcon className="-ml-0.5 mr-2 h-4 w-4" aria-hidden="true" /> Admin Auth
         </GridButton>
       )}

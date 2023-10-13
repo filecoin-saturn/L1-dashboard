@@ -54,7 +54,7 @@ export const columnDefs = [
     cellRenderer: (params: any) => {
       const action = { type: "OPEN_NODE_DETAILS", id: params.data.id };
       return (
-        <button type="button" onClick={() => params.context.dispatch(action)}>
+        <button data-testid="node-details-button" type="button" onClick={() => params.context.dispatch(action)}>
           <ProjectRoadmapIcon className={classNames("cursor-pointer text-slate-600 hover:text-slate-500")} />
         </button>
       );
@@ -126,7 +126,7 @@ export const columnDefs = [
     cellRenderer: (params: any) => {
       return (
         <>
-          <button type="button" onClick={() => copy(params.data.id)}>
+          <button data-testid="copy-icon" type="button" onClick={() => copy(params.data.id)}>
             <CopyIcon className="cursor-pointer text-slate-600 hover:text-slate-500" />
           </button>{" "}
           {params.valueFormatted} {params.data.sunrise ? <span>🌅️</span> : null}

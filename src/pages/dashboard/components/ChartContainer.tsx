@@ -20,6 +20,7 @@ export interface ChartContainerProps {
 export default function ChartContainer(props: ChartContainerProps) {
   return (
     <div
+      data-testid="chart-container"
       className={`relative h-[350px] w-[100%] max-w-[600px] rounded bg-slate-900
             p-4 pt-2`}
     >

@@ -48,7 +48,7 @@ export default function EarningsChart(props: EarningsChartProps) {
 
   return (
     <ChartContainer isLoading={isLoading}>
-      <Line options={options} data={data} />
+      <Line data-testid="earningsChart" options={options} data={data} />
     </ChartContainer>
   );
 }

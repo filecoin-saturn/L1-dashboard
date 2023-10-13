@@ -9,5 +9,5 @@ export default function Loader(props: { size?: number; className?: string }) {
     display: "inline-block",
     animation: "rotation 1s linear infinite",
   };
-  return <span style={style} className={className}></span>;
+  return <span data-testid="loader" style={style} className={className}></span>;
 }

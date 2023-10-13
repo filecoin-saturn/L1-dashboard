@@ -54,7 +54,7 @@ export default function NodesTable(props: any) {
               <button className="w-20"> {params.data.idShort} </button>
               {"   "}
 
-              <button type="button" onClick={() => copy(params.data.nodeId)}>
+              <button type="button" data-testid="node-table-copy-icon" onClick={() => copy(params.data.nodeId)}>
                 <CopyIcon className="cursor-pointer text-slate-600 hover:text-slate-500" />
               </button>
             </div>
