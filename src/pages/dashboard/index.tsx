@@ -1,11 +1,19 @@
 import bytes from "bytes";
 import dayjs from "dayjs";
 import type { DurationUnitType } from "dayjs/plugin/duration";
-import { Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, ReactNode, SetStateAction, useEffect, useState, useMemo, useCallback } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import * as api from "../../api";
-import { GlobalMetrics, MetricsResponse, TimePeriod } from "../../api.types";
-import { pastDateRange } from "../../date-utils";
+import {
+  DateRange,
+  EarningsPeriod,
+  FilterType,
+  GlobalMetrics,
+  MetricsResponse,
+  PastNUnitsPeriod,
+  TimePeriod,
+} from "../../api.types";
+import { getEaringsPeriodOptions, parseDateRange, pastDateRange } from "../../date-utils";
 import BandwidthChart from "./components/BandwidthChart";
 import EarningsChart from "./components/EarningsChart";
 import NodesTable from "./components/NodesTable";
@@ -19,6 +27,13 @@ interface OverviewProps {
   children?: ReactNode;
   isLoading: boolean;
 }
+interface PeriodRangeOptions {
+  pastNUnitsPeriod?: string;
+  earningPeriod?: EarningsPeriod;
+  dateRange?: { startDate: Date; endDate: Date };
+}
+
+const inputClass = `rounded p-2 bg-slate-900 text-slate-100 text-center`;
 
 const UPTIME_REQ_DOCS = "https://docs.saturn.tech/nodes-uptime-requirement";
 export const PAYOUT_STATUS_MAPPING: Record<string, string> = {
@@ -26,44 +41,66 @@ export const PAYOUT_STATUS_MAPPING: Record<string, string> = {
   pending: "In Progress",
   postponed: "Postponed",
 };
+const earningOptions: EarningsPeriod[] = getEaringsPeriodOptions(new Date("November 1, 2022"));
 
-function createChartProps(period: TimePeriod) {
-  let dateRange;
+function createChartProps(periodType: string, periodRange: PeriodRangeOptions) {
+  let dateRange: DateRange;
   let step: DurationUnitType; // group by this time unit
   let labelUnit: DurationUnitType;
 
-  switch (period) {
-    case TimePeriod.ONE_YEAR:
-      dateRange = pastDateRange("day", 365);
+  switch (periodType) {
+    case FilterType.PastNUnits:
+      switch (periodRange.pastNUnitsPeriod) {
+        case PastNUnitsPeriod.DAY:
+          dateRange = pastDateRange("day");
+          step = "hour";
+          labelUnit = step;
+          break;
+        case PastNUnitsPeriod.MONTH:
+          dateRange = pastDateRange("day", 30);
+          step = "day";
+          labelUnit = "day";
+          break;
+        case PastNUnitsPeriod.THREE_MONTHS:
+          dateRange = pastDateRange("day", 90);
+          step = "day";
+          labelUnit = "day";
+          break;
+        case PastNUnitsPeriod.ONE_YEAR:
+          dateRange = pastDateRange("day", 365);
+          step = "day";
+          labelUnit = "day";
+          break;
+        default:
+          dateRange = pastDateRange("week");
+          step = "day";
+          labelUnit = "day";
+          break;
+      }
+      break;
+    case FilterType.Earnings: {
+      if (periodRange.earningPeriod?.date === undefined) {
+        throw new Error("Undefined earning period date");
+      }
+      dateRange = {
+        startDate: dayjs(periodRange.earningPeriod.date).toDate(),
+        endDate: dayjs(periodRange.earningPeriod.date).add(1, "month").toDate(),
+      };
       step = "day";
       labelUnit = "day";
       break;
-    case TimePeriod.THREE_MONTHS:
-      dateRange = pastDateRange("day", 90);
+    }
+    case FilterType.DateRange: {
+      if (periodRange.dateRange === undefined || periodRange.dateRange.startDate > periodRange.dateRange.endDate) {
+        throw new Error("Invalid date range");
+      }
+      dateRange = periodRange.dateRange;
       step = "day";
       labelUnit = "day";
       break;
-    case TimePeriod.MONTH:
-      dateRange = pastDateRange("day", 30);
-      step = "day";
-      labelUnit = "day";
-      break;
-    case TimePeriod.TWO_WEEK:
-      dateRange = pastDateRange("week", 2);
-      step = "hour";
-      labelUnit = "day";
-      break;
-    case TimePeriod.WEEK:
-      dateRange = pastDateRange("week");
-      step = "hour";
-      labelUnit = "day";
-      break;
-    case TimePeriod.DAY:
+    }
     default:
-      dateRange = pastDateRange("day");
-      step = "hour";
-      labelUnit = step;
-      break;
+      throw Error("Unsupported periodType");
   }
 
   const xScale = {
@@ -82,21 +119,101 @@ function createChartProps(period: TimePeriod) {
   return { dateRange, xScale, step, spanGaps, isLoading: false };
 }
 
-function SelectTimePeriod(props: { period: TimePeriod; setPeriod: Dispatch<SetStateAction<TimePeriod>> }) {
-  const options = Object.values(TimePeriod);
+function SelectTimePeriod(props: { filter: FilterType; setFilter: Dispatch<SetStateAction<FilterType>> }) {
+  return (
+    <select value={props.filter} onChange={(e) => props.setFilter(e.target.value as FilterType)} className={inputClass}>
+      {Object.entries(TimePeriod).map(([k, v]) => (
+        <option key={k} value={k}>
+          {v}
+        </option>
+      ))}
+    </select>
+  );
+}
+
+function SelectPastNPeriod(props: { period: string; onChange: (nextPeriod: string) => void }) {
+  useEffect(() => {
+    if (!Object.values(PastNUnitsPeriod).includes(props.period as PastNUnitsPeriod)) {
+      props.onChange(PastNUnitsPeriod.WEEK);
+    }
+    // Correct period query string on mounted
+  }, []);
 
   return (
-    <select
-      value={props.period}
-      onChange={(e) => props.setPeriod(e.target.value as TimePeriod)}
-      className="rounded bg-slate-900 p-1"
-    >
-      {options.map((o) => (
+    <select value={props.period} onChange={(e) => props.onChange(e.target.value)} className={inputClass}>
+      {Object.values(PastNUnitsPeriod).map((o) => (
         <option key={o} value={o}>
           {o}
         </option>
       ))}
     </select>
+  );
+}
+
+function SelectMonthPeriod(props: { period: string; onChange: (nextPeriod: string) => void }) {
+  useEffect(() => {
+    if (!earningOptions.some((o) => o.month === props.period)) {
+      props.onChange(earningOptions[0].month);
+    }
+    // Correct period query string on mounted
+  }, []);
+
+  return (
+    <select value={props.period} onChange={(e) => props.onChange(e.target.value)} className={inputClass}>
+      {earningOptions.map(({ month }) => (
+        <option key={month} value={month}>
+          {month}
+        </option>
+      ))}
+    </select>
+  );
+}
+
+function SelectDateRangePeriod(props: {
+  dateRange?: {
+    startDate: Date | null;
+    endDate: Date | null;
+  };
+  onChange: (nextPeriod: string) => void;
+}) {
+  const [startDate, setStartDate] = useState<Date | null>(props.dateRange?.startDate ?? null);
+  const [endDate, setEndDate] = useState<Date | null>(props.dateRange?.endDate ?? null);
+
+  useEffect(() => {
+    setStartDate(props.dateRange?.startDate ?? null);
+    setEndDate(props.dateRange?.endDate ?? null);
+  }, [props.dateRange?.startDate, props.dateRange?.endDate]);
+
+  useEffect(() => {
+    if (!startDate || !endDate || isNaN(startDate.getTime()) || isNaN(endDate.getTime()) || startDate >= endDate) {
+      return;
+    }
+
+    props.onChange(`${dayjs(startDate).format("YYYY-MM-DD")} ${dayjs(endDate).format("YYYY-MM-DD")}`);
+  }, [startDate, endDate]);
+
+  return (
+    <div className="flex gap-1">
+      <div className="flex gap-1">
+        <input
+          type="date"
+          value={dayjs(startDate).format("YYYY-MM-DD")}
+          className={inputClass}
+          style={{ colorScheme: "dark" }}
+          onChange={(e) => setStartDate(new Date(e.target.value))}
+          max={dayjs(endDate ?? new Date()).format("YYYY-MM-DD")}
+        />
+        <input
+          type="date"
+          value={dayjs(endDate).format("YYYY-MM-DD")}
+          className={inputClass}
+          style={{ colorScheme: "dark" }}
+          onChange={(e) => setEndDate(new Date(e.target.value))}
+          min={startDate ? dayjs(startDate).format("YYYY-MM-DD") : undefined}
+          max={dayjs(new Date()).format("YYYY-MM-DD")}
+        />
+      </div>
+    </div>
   );
 }
 
@@ -215,8 +332,8 @@ function Dashboard() {
 
   const [selectedNode, setSelectedNode] = useState<null | string>(null);
 
-  const defaultPeriod = (searchParams.get("period") as TimePeriod) ?? TimePeriod.WEEK;
-  const [period, setPeriod] = useState<TimePeriod>(defaultPeriod);
+  const period = searchParams.get("period") || PastNUnitsPeriod.WEEK;
+
   const [globalMetrics, setGlobalMetrics] = useState<GlobalMetrics>({
     totalEarnings: 0,
     totalRetrievals: 0,
@@ -229,7 +346,29 @@ function Dashboard() {
     metrics: [],
   });
 
-  const chartProps = createChartProps(period);
+  const [periodType, periodRangeOption] = useMemo<[FilterType, PeriodRangeOptions]>(() => {
+    const earningPeriod = earningOptions.find((earningOption) => earningOption.month === period);
+    if (earningPeriod) {
+      return [FilterType.Earnings, { earningPeriod }];
+    }
+
+    const dateRange = parseDateRange(period);
+    if (dateRange) {
+      return [FilterType.DateRange, { dateRange }];
+    }
+
+    return [FilterType.PastNUnits, { pastNUnitsPeriod: period as PastNUnitsPeriod }];
+  }, [period]);
+
+  const [filter, setFilter] = useState<FilterType>(periodType);
+
+  useEffect(() => {
+    setFilter(periodType);
+  }, [periodType, periodRangeOption]);
+
+  const chartProps = useMemo(() => {
+    return createChartProps(periodType, periodRangeOption);
+  }, [periodType, periodRangeOption]);
 
   // Don't update chart axes until data is fetched.
   // It looks weird if axes update before data does.
@@ -267,13 +406,22 @@ function Dashboard() {
     }
   };
 
+  const setPeriod = useCallback(
+    (nextPeriod: string) => {
+      if (period === nextPeriod) {
+        return;
+      }
+      searchParams.set("period", nextPeriod);
+      setSearchParams(searchParams);
+    },
+    [period]
+  );
+
   useEffect(() => {
     if (!address) {
       return;
     }
 
-    searchParams.set("period", period);
-    setSearchParams(searchParams);
     const controller = new AbortController();
     fetchData(controller);
 
@@ -287,9 +435,15 @@ function Dashboard() {
     <div className="mx-auto mt-8 flex max-w-7xl flex-1 flex-col gap-4">
       {error && <p className="text-center text-lg text-red-600">Error: {error}</p>}
       <div className="flex flex-wrap justify-center gap-12">
-        <Overview {...{ globalMetrics, address, perNodeMetrics, isLoading }} node={selectedNode}>
-          <SelectTimePeriod period={period} setPeriod={setPeriod} />
-        </Overview>
+        <div className="inline-flex w-[100%] justify-end gap-2 p-4">
+          <SelectTimePeriod filter={filter} setFilter={setFilter} />
+          {filter === FilterType.PastNUnits && <SelectPastNPeriod period={period} onChange={setPeriod} />}
+          {filter === FilterType.Earnings && <SelectMonthPeriod period={period} onChange={setPeriod} />}
+          {filter === FilterType.DateRange && (
+            <SelectDateRangePeriod dateRange={periodRangeOption.dateRange} onChange={setPeriod} />
+          )}
+        </div>
+        <Overview {...{ globalMetrics, address, perNodeMetrics, isLoading }} node={selectedNode} />
         <NodesTable metrics={perNodeMetrics} setSelectedNode={setSelectedNode} isLoading={isLoading} />
         <EarningsChart earnings={earnings} node={selectedNode} {...chartPropsFinal} />
         <RequestsChart metrics={metrics} node={selectedNode} {...chartPropsFinal} />

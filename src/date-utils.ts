@@ -8,6 +8,7 @@
 import dayjs, { ManipulateType } from "dayjs";
 import duration from "dayjs/plugin/duration";
 import utc from "dayjs/plugin/utc";
+import { DateRange, EarningsPeriod } from "./api.types";
 
 if (!dayjs.prototype.utc) {
   dayjs.extend(utc);
@@ -20,7 +21,7 @@ export const startOfToday = () => dayjs.utc().startOf("day").toDate();
 
 export const endOfDay = (date: Date) => dayjs.utc(date).endOf("day").toDate();
 
-export function pastDateRange(unit: ManipulateType = "week", count = 1) {
+export function pastDateRange(unit: ManipulateType = "week", count = 1): DateRange {
   const endDateObj = dayjs.utc().startOf("minute");
   const endDate = endDateObj.toDate();
   const startDate = endDateObj.subtract(count, unit).toDate();
@@ -52,4 +53,49 @@ export function dayIntervalFromDateRange(startDate: Date, endDate: Date) {
   }
 
   return dateInterval;
+}
+
+export function getEaringsPeriodOptions(startDate: Date): EarningsPeriod[] {
+  const today = new Date();
+  const startYear = startDate.getFullYear();
+  const endYear = today.getFullYear();
+  const options: EarningsPeriod[] = [];
+
+  for (let i = startYear; i <= endYear; i++) {
+    const endMonth = i !== endYear ? 11 : today.getMonth();
+    const startMonth = i === startYear ? startDate.getMonth() : 0;
+
+    for (let j = startMonth; j <= endMonth; j++) {
+      const displayDate = new Date(i, j, 1);
+
+      const monthName = dayjs(displayDate).format("MMMM YYYY");
+
+      options.push({
+        month: monthName,
+        date: displayDate,
+      });
+    }
+  }
+
+  return options.reverse();
+}
+
+export function parseDateRange(dateString: string): {
+  startDate: Date;
+  endDate: Date;
+} | null {
+  const customRangeMatch = /^(\d{4})-(\d{2})-(\d{2}) (\d{4})-(\d{2})-(\d{2})$/g.exec(dateString);
+
+  if (!customRangeMatch) {
+    return null;
+  }
+
+  const startDate = new Date(+customRangeMatch[1], +customRangeMatch[2] - 1, +customRangeMatch[3]);
+  const endDate = new Date(+customRangeMatch[4], +customRangeMatch[5] - 1, +customRangeMatch[6]);
+
+  if (startDate > endDate) {
+    return null;
+  }
+
+  return { startDate, endDate };
 }
